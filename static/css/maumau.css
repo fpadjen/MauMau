@@ -1,4 +1,4 @@
-#output-wrap {
+.output {
 	height: 200px;
 	overflow: scroll;
 }
