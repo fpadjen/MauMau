@@ -82,13 +82,26 @@ def main():
         print 'You currently hold the following cards in your hand.'
         playerList[state.getCurrentPlayer()].display_hand()
 
-        card_to_play = playerList[state.getCurrentPlayer()].choose_card(card_stack.get_current_middle())
-        if card_to_play == 'Drinker of Drinks':
-            card_stack.randomize_cardstack()
-            playerList[state.getCurrentPlayer()].draw_card(card_stack.deal_card())
-        else:
-            card_stack.set_new_middle(card_to_play)
-            print '%s says: I have played the %s' % (playerList[state.getCurrentPlayer()].getCurrentPlayerName(), card_stack.get_current_middle())
+        playerList[state.getCurrentPlayer()].init_playable_cards(card_stack.get_current_middle())
+        if playerList[state.getCurrentPlayer()].getCurrentPlayerType() == "h":
+            # human player
+            print "Middle card is %r" % (card_stack.get_current_middle())
+            if playerList[state.getCurrentPlayer()].get_playable_card_count() == 0:
+                print "You do not have a card you can play. Drawing a card..."
+                playerList[state.getCurrentPlayer()].draw_card()
+            else:
+                print "You can play the following cards:"
+                print "%r" % playerList[state.getCurrentPlayer()].get_playable_cards()
+                card_stack.set_new_middle(playerList[state.getCurrentPlayer()].get_card_to_play(int(input("Enter a number from above:"))))
+        elif playerList[state.getCurrentPlayer()].getCurrentPlayerType() == "b":
+            # bot player
+            card_to_play = playerList[state.getCurrentPlayer()].choose_card()
+            if card_to_play == 'Drinker of Drinks':
+                card_stack.randomize_cardstack()
+                playerList[state.getCurrentPlayer()].draw_card(card_stack.deal_card())
+            else:
+                card_stack.set_new_middle(card_to_play)
+                print '%s says: I have played the %s' % (playerList[state.getCurrentPlayer()].getCurrentPlayerName(), card_stack.get_current_middle())
 
         mau_state = playerList[state.getCurrentPlayer()].check_mau()
         if mau_state == 0:

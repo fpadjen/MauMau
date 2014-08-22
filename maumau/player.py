@@ -12,53 +12,48 @@ class Player:
         self.name = name
         self.hand = []
         self.playerType = playerType
-
-
+        self.playable_cards = []
 
     def __repr__(self):
         return self.name
 
-
-
     def getCurrentPlayerName(self):
         return self.name
 
-
-
     def getCurrentPlayerType(self):
-        return self.type
-
-
+        return self.playerType
 
     def getPlayerlist(self):
         return self.playerList
 
-
-
     def draw_card(self, card):
         self.hand.append(card)
 
+    def get_playable_card_count(self):
+        return len(self.playable_cards)
 
+    def get_playable_cards(self):
+        return self.playable_cards
 
-    def choose_card(self,middle):
-        playable_cards = []
-
+    def init_playable_cards(self,middle):
         middle_value, middle_color = middle.split(' of ')
-
         for card in range(0, len(self.hand)):
             if middle_color in self.hand[card] or middle_value in self.hand[card]:
-                playable_cards.append(card)
+                self.playable_cards.append(card)
 
+    def get_card_to_play(self, number):
+        self.check_mau()
+        return self.hand.pop(self.playable_cards[number])
+
+    def choose_card(self):
         # pick card to play, first from playable for now
         # build fancy algorithm here
-        if len(playable_cards) == 0:
+        if len(self.playable_cards) == 0:
             print "I have no card i can play. Deal!"
             return 'Drinker of Drinks'
         else:
             self.check_mau()
-            return self.hand.pop(playable_cards[0])
-
-
+            return self.hand.pop(self.playable_cards[0])
 
     def check_mau(self):
         if len(self.hand) == 1:
@@ -70,12 +65,8 @@ class Player:
         else:
             return 1
 
-
-
     def get_card_count(self):
         return len(self.hand)
-
-
 
     def display_hand(self):
         print self.hand
