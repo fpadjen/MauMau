@@ -9,7 +9,7 @@ $(document).ready(function() {
 	websocket.onopen =
 			function(ev) {
 				// alert('Connected to server ');
-			}
+			};
 
 	// Connection close
 	websocket.onclose =
@@ -20,11 +20,15 @@ $(document).ready(function() {
 	// Message Receved
 	websocket.onmessage =
 			function(ev) {
-				$('#output-area').append('<div>' + ev.data + '</div>');
-				$('#message')[0].value = '';
-				var output    = $('#output-wrap');
-			    var height = output[0].scrollHeight;
-			    output.scrollTop(height);
+				$('#output-area').append('<div>' +
+						ev.data + '</div>');
+				$('#message')[0].value =
+						'';
+				var output =
+						$('#output-wrap');
+				var height =
+						output[0].scrollHeight;
+				output.scrollTop(height);
 			};
 
 	// Error
