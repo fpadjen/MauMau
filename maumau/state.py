@@ -24,8 +24,10 @@ class State:
         return self.totalPlayerCount
 
 
+
     def setNumTotalPlayers(count):
         self.totalPlayerCount = count
+
 
 
     def getCurrentPlayer(self):
@@ -33,8 +35,8 @@ class State:
 
 
 
-    def setCurrentPlayer(self, player):
-        self.currentPlayer = player
+    def setCurrentPlayer(self, number):
+        self.currentPlayer = number
 
 
 

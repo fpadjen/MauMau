@@ -15,8 +15,8 @@ class Player:
 
 
 
-    def __str__(self):
-        print self.name
+    def __repr__(self):
+        return self.name
 
 
 
