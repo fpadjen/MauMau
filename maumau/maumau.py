@@ -92,7 +92,8 @@ def main():
             else:
                 print "You can play the following cards:"
                 print "%r" % playerList[state.getCurrentPlayer()].get_playable_cards()
-                card_stack.set_new_middle(playerList[state.getCurrentPlayer()].get_card_to_play(int(input("Enter a number from above:"))))
+                i = int(raw_input("Enter number from above: "))
+                card_stack.set_new_middle(playerList[state.getCurrentPlayer()].get_card_to_play(i))
         elif playerList[state.getCurrentPlayer()].getCurrentPlayerType() == "b":
             # bot player
             card_to_play = playerList[state.getCurrentPlayer()].choose_card()
