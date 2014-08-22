@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	// Open a WebSocket connection.
 	var wsUri =
-			"ws://localhost:5000/ws";
+			'ws://' + window.location.host + '/ws';
 	websocket =
 			new WebSocket(wsUri);
 
