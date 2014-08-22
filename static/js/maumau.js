@@ -8,7 +8,7 @@ $(document).ready(function() {
 	// Connected to server
 	websocket.onopen =
 			function(ev) {
-//				alert('Connected to server ');
+				// alert('Connected to server ');
 			}
 
 	// Connection close
@@ -20,8 +20,11 @@ $(document).ready(function() {
 	// Message Receved
 	websocket.onmessage =
 			function(ev) {
-				alert('Message ' +
-						ev.data);
+				$('#output-area').append('<div>' + ev.data + '</div>');
+				$('#message')[0].value = '';
+				var output    = $('#output-wrap');
+			    var height = output[0].scrollHeight;
+			    output.scrollTop(height);
 			};
 
 	// Error
