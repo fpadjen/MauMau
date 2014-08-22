@@ -13,9 +13,9 @@ class Game(object):
     card_stack = Deck()
     state = State()
 
-    def __init__(self, output, input):
+    def __init__(self, output, input_device):
         self.output = output
-        self.input = input
+        self.input = input_device
 
     def deal_cards_to_players(self, players, stack):
         for count in range(0, players):
@@ -35,9 +35,9 @@ class Game(object):
             if (player_type.lower() == "h") or player_type.lower() == "b":
                 # create new object, name it by number starting with 0
                 # add name to list playerList for access
-                playerID = Player(current_name, player_type, output=self.output)
-                self.playerList.append(playerID)
-                self.output("debug: new player object created %r" % (playerID.getCurrentPlayerName()))
+                player = Player(current_name, player_type, output=self.output)
+                self.playerList.append(player)
+                self.output("debug: new player object created %r" % (player.getCurrentPlayerName()))
                 self.state.incTotalPlayerCount()
             else:
                 self.output("Please enter h or b to identify player type.")
@@ -50,20 +50,16 @@ class Game(object):
                 more_players = False
 
     def add_web_player(self):
-        playerID = Player('player', 'h', output=self.output)
-        self.playerList.append(playerID)
+        self.playerList.append(Player('player', 'h', output=self.output))
         self.state.incTotalPlayerCount()
 
-        playerID = Player('bot1', 'b', output=self.output)
-        self.playerList.append(playerID)
+        self.playerList.append(Player('bot1', 'b', output=self.output))
         self.state.incTotalPlayerCount()
 
-        playerID = Player('bot2', 'b', output=self.output)
-        self.playerList.append(playerID)
+        self.playerList.append(Player('bot2', 'b', output=self.output))
         self.state.incTotalPlayerCount()
 
-        playerID = Player('bot3', 'b', output=self.output)
-        self.playerList.append(playerID)
+        self.playerList.append(Player('bot3', 'b', output=self.output))
         self.state.incTotalPlayerCount()
 
     def check_special_cards(self):

@@ -32,7 +32,7 @@ class WebsocketConnection(object):
 @sockets.route('/ws')
 def echo_socket(ws):
     wc = WebsocketConnection(ws)
-    game = Game(output=ws.send, input=wc.input_adapter)
+    game = Game(output=ws.send, input_device=wc.input_adapter)
     game.add_web_player()
     game.state.setCurrentPlayer(random.randint(0, game.state.getNumTotalPlayers()))
     game.deal_cards_to_players(game.state.getNumTotalPlayers(), game.card_stack)
