@@ -1,6 +1,8 @@
 import os
 from flask import Flask, send_from_directory
 from flask_sockets import Sockets
+from maumau import Game
+import random
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 sockets = Sockets(app)
@@ -18,6 +20,12 @@ def index():
 
 @sockets.route('/ws')
 def echo_socket(ws):
+    game = Game(output=ws.send)
+    game.add_web_player()
+    game.state.setCurrentPlayer(random.randint(0, game.state.getNumTotalPlayers()))
+    game.deal_cards_to_players(game.state.getNumTotalPlayers(), game.card_stack)
+    game.start()
+
     while True:
         message = ws.receive()
         ws.send(message)

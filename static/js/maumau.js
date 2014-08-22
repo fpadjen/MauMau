@@ -1,29 +1,29 @@
 $(document).ready(function() {
 	// Open a WebSocket connection.
 	var wsUri =
-			"ws://localhost:5000/ws";
+			'ws://' + window.location.host + '/ws';
 	websocket =
 			new WebSocket(wsUri);
 
 	// Connected to server
 	websocket.onopen =
 			function(ev) {
-				// alert('Connected to server ');
+				console.log('Connected to server ');
 			};
 
 	// Connection close
 	websocket.onclose =
 			function(ev) {
-				alert('Disconnected');
+				console.log('Disconnected: ' + ev);
 			};
 
 	// Message Receved
 	websocket.onmessage =
 			function(ev) {
+				console.log(ev);
 				$('#output-area').append('<div>' +
 						ev.data + '</div>');
-				$('#message')[0].value =
-						'';
+				
 				var output =
 						$('#output-wrap');
 				var height =
@@ -38,10 +38,13 @@ $(document).ready(function() {
 						ev.data);
 			};
 
-	$('#message').keypress(function(e) {
+	function textInput(e) {
 		if (e.which == 13) {
 			websocket.send($('#message')[0].value);
+			$('#message')[0].value = '';
 			return false;
 		}
-	});
+	}
+			
+	$('#message').keypress(textInput);
 });
