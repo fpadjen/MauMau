@@ -1,0 +1,39 @@
+maumau algorithm
+
+- shuffle deck
+- get number of players
+- determine beginner by random function
+- pop off top deck a card clockwise to each player starting at beginner
+- stop when each player has 6 cards
+
+- pop top card from stack into middle view open
+- if card is 7 pop 2 cards into current players hand from stack
+- if card is knave current player can play what he wants
+- if card is ace next player
+
+- player chooses card from hand to play
+
+- check what card to play
+- card has to be either same color or same value or knave
+- if no card from hand is playable pop top card from stack to players hand and next players turn
+- play card selected by algorithm for picking into middle
+- if card played is next to last call mau
+- if play is possible and card is last card, call maumau. win.
+
+- check if stack still has cards
+- if close to zero or zero pop top card from middle to new middle
+- shuffle rest of middle
+- make new stack
+
+- next player
+
+
+
+- algorithm on what card to play best
+  - special cards 7 knave ace
+  - status for other players behaviors
+    - player x could not play color/value from hand, had to draw new card
+    - player card count, try to influence players close to finishing (have called maumau)
+
+
+
