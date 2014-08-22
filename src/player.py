@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import random
-
 #
 # This file is imported by maumau.py
 # It contains the player class
 #
 
+
 class Player:
+
     def __init__(self, name=None, playerType=None):
         self.name = name
         self.hand = []
@@ -35,7 +35,7 @@ class Player:
     def get_playable_cards(self):
         return self.playable_cards
 
-    def init_playable_cards(self,middle):
+    def init_playable_cards(self, middle):
         middle_value, middle_color = middle.split(' of ')
         for card in range(0, len(self.hand)):
             if middle_color in self.hand[card] or middle_value in self.hand[card]:
@@ -70,6 +70,3 @@ class Player:
 
     def display_hand(self):
         print self.hand
-
-
-
