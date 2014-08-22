@@ -56,9 +56,10 @@ def check_special_cards():
     elif "Jack" in card_stack.get_current_middle():
         print "You can play any card you want!"
     elif "Ace" in card_stack.get_current_middle():
-        print 'You have bad luck. %s, your turn.' % (playerList[state.getCurrentPlayer()].getCurrentPlayerName())
+        print 'You have bad luck, %s' % (playerList[state.getCurrentPlayer()].getCurrentPlayerName())
         state.nextPlayer()
         state.setCurrentPlayer(state.getCurrentPlayer() % len(playerList))
+        print "%s, your turn." % (playerList[state.getCurrentPlayer()].getCurrentPlayerName())
     else:
         print "You can play a card from your hand or draw from the stack."
 
