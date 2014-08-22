@@ -25,7 +25,6 @@ class Game(object):
             for _ in range(0, 6):
                 # players[count].draw_card(stack.pop())
                 self.playerList[count].draw_card(stack.deal_card())
-        # print 'debug: player 0 card info %r' % (players[0].get_card_count())
 
     def initPlayer(self):
         more_players = True
@@ -39,7 +38,7 @@ class Game(object):
             if (player_type.lower() == "h") or player_type.lower() == "b":
                 # create new object, name it by number starting with 0
                 # add name to list playerList for access
-                playerID = Player(current_name, player_type)
+                playerID = Player(current_name, player_type, output=self.output)
                 self.playerList.append(playerID)
                 self.output("debug: new player object created %r" % (playerID.getCurrentPlayerName()))
                 self.state.incTotalPlayerCount()
@@ -54,19 +53,19 @@ class Game(object):
                 more_players = False
 
     def add_web_player(self):
-        playerID = Player('player', 'h')
+        playerID = Player('player', 'h', output=self.output)
         self.playerList.append(playerID)
         self.state.incTotalPlayerCount()
 
-        playerID = Player('bot1', 'b')
+        playerID = Player('bot1', 'b', output=self.output)
         self.playerList.append(playerID)
         self.state.incTotalPlayerCount()
 
-        playerID = Player('bot2', 'b')
+        playerID = Player('bot2', 'b', output=self.output)
         self.playerList.append(playerID)
         self.state.incTotalPlayerCount()
 
-        playerID = Player('bot3', 'b')
+        playerID = Player('bot3', 'b', output=self.output)
         self.playerList.append(playerID)
         self.state.incTotalPlayerCount()
 
@@ -81,7 +80,7 @@ class Game(object):
             self.output('You have bad luck, %s' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
             self.state.nextPlayer()
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
-            print "%s, your turn." % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName())
+            self.output("%s, your turn." % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
         else:
             self.output("You can play a card from your hand or draw from the stack.")
 
