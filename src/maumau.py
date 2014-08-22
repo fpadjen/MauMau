@@ -32,7 +32,6 @@ class Game(object):
             if (player_type.lower() == "h") or player_type.lower() == "b":
                 # create new object, name it by number starting with 0
                 # add name to list playerList for access
-                playerID = self.state.getNumTotalPlayers()
                 playerID = Player(current_name, player_type)
                 self.playerList.append(playerID)
                 print "debug: new player object created %r" % (playerID.getCurrentPlayerName())
@@ -46,6 +45,23 @@ class Game(object):
                 continue
             else:
                 more_players = False
+
+    def add_web_player(self):
+        playerID = Player('player', 'h')
+        self.playerList.append(playerID)
+        self.state.incTotalPlayerCount()
+
+        playerID = Player('bot1', 'b')
+        self.playerList.append(playerID)
+        self.state.incTotalPlayerCount()
+
+        playerID = Player('bot2', 'b')
+        self.playerList.append(playerID)
+        self.state.incTotalPlayerCount()
+
+        playerID = Player('bot3', 'b')
+        self.playerList.append(playerID)
+        self.state.incTotalPlayerCount()
 
     def check_special_cards(self):
         if "Seven" in self.card_stack.get_current_middle():
