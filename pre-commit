@@ -1,11 +1,10 @@
 #!/bin/sh
 set -e
-
+pep8 --ignore=E501 src/
 set +e
 
 nosetests
 PYTHONPATH=src py.test tests/*.py --doctest-modules --pep8 src --pep8 tests -v --cov src/ --cov-report term-missing --cov-report=html
-pep8 --ignore=E501 src/
 grunt
 
-
+exit 0
