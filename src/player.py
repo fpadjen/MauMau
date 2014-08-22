@@ -8,11 +8,12 @@
 
 class Player:
 
-    def __init__(self, name=None, playerType=None):
+    def __init__(self, name=None, playerType=None, output=None):
         self.name = name
         self.hand = []
         self.playerType = playerType
         self.playable_cards = []
+        self.output = output
 
     def __repr__(self):
         return self.name
@@ -54,10 +55,10 @@ class Player:
 
     def check_mau(self):
         if len(self.hand) == 1:
-            print '%s: Last card! I call mau!' % (self.name.rstrip('\n'))
+            self.output('%s: Last card! I call mau!' % (self.name.rstrip('\n')))
             return 1
         elif len(self.hand) == 0:
-            print '%s I just placed my last card! maumau :D' % (self.name.rstrip('\n'))
+            self.output('%s I just placed my last card! maumau :D' % (self.name.rstrip('\n')))
             return 0
         else:
             return 1
@@ -66,4 +67,4 @@ class Player:
         return len(self.hand)
 
     def display_hand(self):
-        print self.hand
+        self.output(self.hand)
