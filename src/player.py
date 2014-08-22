@@ -36,24 +36,21 @@ class Player:
         return self.playable_cards
 
     def init_playable_cards(self, middle):
+        self.playable_cards = []
         middle_value, middle_color = middle.split(' of ')
         for card in range(0, len(self.hand)):
             if middle_color in self.hand[card] or middle_value in self.hand[card]:
                 self.playable_cards.append(card)
 
+    # FIXME: function name here should reflect human player
     def get_card_to_play(self, number):
         self.check_mau()
-        return self.hand.pop(self.playable_cards[number])
+        return self.hand.pop(number)
 
+    # FIXME: function name here should reflect bot player
     def choose_card(self):
-        # pick card to play, first from playable for now
-        # build fancy algorithm here
-        if len(self.playable_cards) == 0:
-            print "I have no card i can play. Deal!"
-            return 'Drinker of Drinks'
-        else:
-            self.check_mau()
-            return self.hand.pop(self.playable_cards[0])
+        self.check_mau()
+        return self.hand.pop(0)
 
     def check_mau(self):
         if len(self.hand) == 1:

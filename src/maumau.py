@@ -80,12 +80,14 @@ def main():
         playerList[state.getCurrentPlayer()].display_hand()
 
         playerList[state.getCurrentPlayer()].init_playable_cards(card_stack.get_current_middle())
+        print "debug: playable cards %r" % (playerList[state.getCurrentPlayer()].get_playable_cards())
         if playerList[state.getCurrentPlayer()].getCurrentPlayerType() == "h":
             # human player
             print "Middle card is %r" % (card_stack.get_current_middle())
             if playerList[state.getCurrentPlayer()].get_playable_card_count() == 0:
+                card_stack.randomize_cardstack()
                 print "You do not have a card you can play. Drawing a card..."
-                playerList[state.getCurrentPlayer()].draw_card()
+                playerList[state.getCurrentPlayer()].draw_card(card_stack.deal_card())
             else:
                 print "You can play the following cards:"
                 print "%r" % playerList[state.getCurrentPlayer()].get_playable_cards()
@@ -94,7 +96,7 @@ def main():
         elif playerList[state.getCurrentPlayer()].getCurrentPlayerType() == "b":
             # bot player
             card_to_play = playerList[state.getCurrentPlayer()].choose_card()
-            if card_to_play == 'Drinker of Drinks':
+            if playerList[state.getCurrentPlayer()].get_playable_card_count() == 0:
                 card_stack.randomize_cardstack()
                 playerList[state.getCurrentPlayer()].draw_card(card_stack.deal_card())
             else:
