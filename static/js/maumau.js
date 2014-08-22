@@ -18,17 +18,20 @@ $(document).ready(function() {
 			};
 
 	// Message Receved
+	function add_message(message) {
+		$('#output-area').append('<div>' +
+				message + '</div>');
+		
+		var output =
+				$('#output-wrap');
+		var height =
+				output[0].scrollHeight;
+		output.scrollTop(height);
+	}
+			
 	websocket.onmessage =
 			function(ev) {
-				console.log(ev);
-				$('#output-area').append('<div>' +
-						ev.data + '</div>');
-				
-				var output =
-						$('#output-wrap');
-				var height =
-						output[0].scrollHeight;
-				output.scrollTop(height);
+				add_message(ev.data);
 			};
 
 	// Error
@@ -40,8 +43,10 @@ $(document).ready(function() {
 
 	function textInput(e) {
 		if (e.which == 13) {
-			websocket.send($('#message')[0].value);
+			var message = $('#message')[0].value;
+			websocket.send(message);
 			$('#message')[0].value = '';
+			add_message(message);
 			return false;
 		}
 	}

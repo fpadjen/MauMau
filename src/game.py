@@ -13,8 +13,9 @@ class Game(object):
     card_stack = Deck()
     state = State()
 
-    def __init__(self, output):
+    def __init__(self, output, input):
         self.output = output
+        self.input = input
 
     def deal_cards_to_players(self, players, stack):
         for count in range(0, players):
@@ -26,10 +27,10 @@ class Game(object):
         more_players = True
         while more_players:
             self.output("Enter player name please:")
-            current_name = raw_input()
+            current_name = self.input()
             self.output("Is this a human or computer player?")
             self.output("Press h if the player is human, b if it is a bot.")
-            player_type = raw_input()
+            player_type = self.input()
 
             if (player_type.lower() == "h") or player_type.lower() == "b":
                 # create new object, name it by number starting with 0
@@ -43,7 +44,7 @@ class Game(object):
                 continue
 
             self.output("Add another player? (y/n)")
-            if raw_input() == "y":
+            if self.input() == "y":
                 continue
             else:
                 more_players = False
@@ -109,7 +110,7 @@ class Game(object):
                 else:
                     self.output("You can play the following cards:")
                     self.output("%r" % self.playerList[self.state.getCurrentPlayer()].get_playable_cards())
-                    i = int(raw_input("Enter number from above: "))
+                    i = int(self.input("Enter number from above: "))
                     self.card_stack.set_new_middle(self.playerList[self.state.getCurrentPlayer()].get_card_to_play(i))
             elif self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "b":
                 # bot player
