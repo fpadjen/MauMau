@@ -20,10 +20,11 @@ def index():
 
 @sockets.route('/ws')
 def echo_socket(ws):
-    game = Game()
+    game = Game(output=ws.send)
     game.add_web_player()
     game.state.setCurrentPlayer(random.randint(0, game.state.getNumTotalPlayers()))
     game.deal_cards_to_players(game.state.getNumTotalPlayers(), game.card_stack)
+    game.start()
 
     while True:
         message = ws.receive()
