@@ -1,0 +1,19 @@
+language: python
+python:
+- '2.7'
+before_install: npm install -g grunt-cli
+install:
+- pip install -r requirements.txt
+- npm install
+script:
+- "./pre-commit"
+after_success:
+- coveralls
+deploy:
+  provider: cloudcontrol
+  email: tooangel@tooangel.de
+  password:
+    secure: MPiPKNP3zNuUGGiv+N/Y3EUrSDvbBF0npzMRdt2y+H2YIvvryFwVPNpw+EEcNoWfnJRa/YrSEXuhcN67UyS4N3zd1NDKKLcD0sdF293cvdpIptGU31gyLPBEAhO1B8tPaCxFTqnSwwmkvKZRxS59Esv1MQ1fwGFvcZNqgXau3s8=
+  deployment: maumau/default
+  on:
+    repo: TooAngel/MauMau
