@@ -14,16 +14,15 @@ state = State()
 
 def deal_cards_to_players(players, stack):
     for count in range(0, players):
-        for i in range(0, 6):
+        for _ in range(0, 6):
             # players[count].draw_card(stack.pop())
             playerList[count].draw_card(stack.deal_card())
     # print 'debug: player 0 card info %r' % (players[0].get_card_count())
 
 
-
 def initPlayer():
-    no_more_players = False
-    while no_more_players != True:
+    more_players = True
+    while more_players:
         print "Enter player name please:"
         current_name = raw_input()
         print "Is this a human or computer player?"
@@ -46,8 +45,7 @@ def initPlayer():
         if raw_input() == "y":
             continue
         else:
-            no_more_players = True
-
+            more_players = False
 
 
 def check_special_cards():
@@ -65,7 +63,6 @@ def check_special_cards():
         print "You can play a card from your hand or draw from the stack."
 
 
-
 def main():
 
     initPlayer()
@@ -73,8 +70,8 @@ def main():
     deal_cards_to_players(state.getNumTotalPlayers(), card_stack)
 
     # main play loop starts here
-    won = False
-    while won != True:
+    running = True
+    while running:
         state.setCurrentPlayer(state.getCurrentPlayer() % len(playerList))
         print '%s, your turn to play!' % (playerList[state.getCurrentPlayer()])
         print 'The current card in the middle is the %s' % (card_stack.get_current_middle())
@@ -106,7 +103,7 @@ def main():
 
         mau_state = playerList[state.getCurrentPlayer()].check_mau()
         if mau_state == 0:
-            won = True
+            running = False
             print 'Player %s won!' % (playerList[state.getCurrentPlayer()].getCurrentPlayerName())
             sys.exit(0)
 

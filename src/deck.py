@@ -6,6 +6,7 @@ import random
 # This file contains the class for handling the stack and middle in maumau
 #
 
+
 class Deck:
 
     def __init__(self, name=None):
@@ -16,11 +17,11 @@ class Deck:
         self.deck = []
         self.middle_card = ''
         self.deck = self.create_deck(english_card_colors, english_card_values)
-        #for element in self.deck:
+        # for element in self.deck:
         #    print 'debug: element %r' % (element)
         self.middle_card = str(self.deck.pop())
-        #print 'debug: first middle card %r' % (self.middle_card)
-        #print 'debug: new deck %r' % (self.deck)
+        # print 'debug: first middle card %r' % (self.middle_card)
+        # print 'debug: new deck %r' % (self.deck)
 
     def create_deck(self, colors, values):
         for i in values:
@@ -28,11 +29,11 @@ class Deck:
                 self.deck.append(i + " of " + j)
                 self.randomize_cardstack()
         # debug
-        #for card in self.deck: print "%r" % (card)
+        # for card in self.deck: print "%r" % (card)
         return self.deck
 
     def get_current_middle(self):
-        #print "debug: card currently in middle %s" % (str(self.middle_card))
+        # print "debug: card currently in middle %s" % (str(self.middle_card))
         return str(self.middle_card)
 
     def middle_to_stack(self):
@@ -40,7 +41,7 @@ class Deck:
         self.middle_card = ''
 
     def set_new_middle(self, card):
-        #print 'debug: card to set as new middle %r' % (card)
+        # print 'debug: card to set as new middle %r' % (card)
         self.middle_to_stack()
         self.middle_card = card
 
@@ -48,7 +49,7 @@ class Deck:
         random.shuffle(self.deck)
 
     def deal_card(self):
-        #print 'debug: card count in deck is %r' % len(self.deck)
+        # print 'debug: card count in deck is %r' % len(self.deck)
         return self.deck.pop()
 
     def card_back_to_stack(self, card):
