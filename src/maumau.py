@@ -7,7 +7,8 @@ def print_adapter(data):
     if isinstance(data, dict):
         if data['action'] == 'turn':
             print '{}, your turn to play!'.format(data['player'])
-            print 'The current card in the middle is the {}'.format(data['middle'])
+            print('The current card in the middle is the {}'
+                  .format(data['middle']))
         elif data['action'] == 'skip':
             print 'You have bad luck, {}'.format(data['player'])
         else:
@@ -30,7 +31,11 @@ if __name__ == '__main__':
         player_type = raw_input()
 
         if player_type.lower() == "h":
-            game.add_player(current_name, player_type, output_device=print_adapter, input_device=input_adapter)
+            game.add_player(
+                current_name,
+                player_type,
+                output_device=print_adapter,
+                input_device=input_adapter)
         elif player_type.lower() == "b":
             game.add_player(current_name)
         else:

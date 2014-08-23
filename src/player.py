@@ -1,7 +1,11 @@
 
 class Player(object):
 
-    def __init__(self, name=None, playerType=None, output_device=None, input_device=None):
+    def __init__(self,
+                 name=None,
+                 playerType=None,
+                 output_device=None,
+                 input_device=None):
         self.name = name
         self.hand = []
         self.playerType = playerType
@@ -10,7 +14,11 @@ class Player(object):
         self.input_device = input_device
 
     def to_dict(self):
-        return {'name': self.name, 'hand': self.hand, 'playable_cards': self.playable_cards}
+        return {
+            'name': self.name,
+            'hand': self.hand,
+            'playable_cards': self.playable_cards
+        }
 
     def getCurrentPlayerName(self):
         return self.name
@@ -36,7 +44,8 @@ class Player(object):
             self.playable_cards = self.hand
         middle_value, middle_color = middle.split('_of_')
         for card in range(0, len(self.hand)):
-            if middle_color in self.hand[card] or middle_value in self.hand[card]:
+            if (middle_color in self.hand[card]
+                    or middle_value in self.hand[card]):
                 self.playable_cards.append(card)
 
     # FIXME: function name here should reflect human player
@@ -51,10 +60,10 @@ class Player(object):
 
     def check_mau(self):
         if len(self.hand) == 1:
-            # self.output('%s: Last card! I call mau!' % (self.name.rstrip('\n')))
+            # mau
             return 1
         elif len(self.hand) == 0:
-            # self.output('%s I just placed my last card! maumau :D' % (self.name.rstrip('\n')))
+            # maumau
             return 0
         else:
             return 1

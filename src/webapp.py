@@ -6,13 +6,22 @@ import random
 import time
 import json
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+app = Flask(
+    __name__,
+    template_folder='../templates',
+    static_folder='../static')
 sockets = Sockets(app)
 
 
 @app.route('/bower_components/<path:filename>')
 def bower_components(filename):
-    return send_from_directory(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'bower_components')), filename)
+    return send_from_directory(
+        os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                '..',
+                'bower_components')
+        ), filename)
 
 
 @app.route('/')
@@ -43,9 +52,16 @@ def echo_socket(ws):
     game = Game()
     game.add_player('bot1')
     game.add_player('bot2')
-    game.add_player('player', 'h', output_device=wc.output_adapter, input_device=wc.input_adapter)
-    game.state.setCurrentPlayer(random.randint(0, game.state.getNumTotalPlayers()))
-    game.deal_cards_to_players(game.state.getNumTotalPlayers(), game.card_stack)
+    game.add_player(
+        'player',
+        'h',
+        output_device=wc.output_adapter,
+        input_device=wc.input_adapter)
+    game.state.setCurrentPlayer(
+        random.randint(0, game.state.getNumTotalPlayers()))
+    game.deal_cards_to_players(
+        game.state.getNumTotalPlayers(),
+        game.card_stack)
     game.start()
 
     while True:

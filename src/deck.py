@@ -11,7 +11,8 @@ class Deck:
 
     def __init__(self, name=None):
         english_card_colors = ['spades', 'hearts', 'clubs', 'diamonds']
-        english_card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
+        english_card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10',
+                               'jack', 'queen', 'king', 'ace']
         self.deck = []
         self.middle_card = ''
         self.deck = self.create_deck(english_card_colors, english_card_values)
