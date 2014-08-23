@@ -8,6 +8,8 @@ def print_adapter(data):
         if data['action'] == 'turn':
             print '{}, your turn to play!'.format(data['player'])
             print 'The current card in the middle is the {}'.format(data['middle'])
+        elif data['action'] == 'skip':
+            print 'You have bad luck, {}'.format(data)
         else:
             print data
     else:

@@ -88,8 +88,10 @@ class Game(object):
         running = True
         while running:
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
-            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
+
             self.check_special_cards()
+
+            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
 
             self.playerList[self.state.getCurrentPlayer()].init_playable_cards(self.card_stack.get_current_middle())
             self.output("debug: playable cards %r" % (self.playerList[self.state.getCurrentPlayer()].get_playable_cards()))
