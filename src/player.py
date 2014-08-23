@@ -1,18 +1,96 @@
 import time
+import os
+import redis
+from threading import Thread
+import json
+from deck import Deck
 
 
-class Player(object):
+class Player(Thread):
     def __init__(self,
                  name=None,
                  playerType=None,
                  output_device=None,
                  input_device=None):
+        super(Player, self).__init__()
         self.name = name
         self.hand = []
         self.playerType = playerType
         self.playable_cards = []
         self.output_device = output_device
         self.input_device = input_device
+        self.next_player = None
+        REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
+        self.client = redis.from_url(REDIS_URL)
+        self.won = False
+
+    def run(self):
+        REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
+        client = redis.from_url(REDIS_URL)
+        pubsub = client.pubsub()
+        pubsub.subscribe(['table'])
+
+        for message in pubsub.listen():
+            if message['type'] == 'subscribe':
+                continue
+            data = json.loads(message['data'])
+            print('player: {} next: {} data: {}'
+                  .format(self.name, self.next_player, data))
+            if data['action'] == 'quit':
+                if data['player'] == self.name:
+                    break
+                if data['player'] == self.next_player:
+                    self.next_player = data['next']
+                continue
+            if data['action'] == 'won':
+                if data['player'] == self.name:
+                    break
+                if data['player'] == self.next_player:
+                    self.next_player = data['next']
+                continue
+            if data['action'] == 'join':
+                if data['before'] == self.next_player:
+                    self.next_player = data['player']
+                continue
+            if data['next'] == self.name:
+                self.play(data)
+
+    def publish(self, action, middle):
+        self.client.publish(
+            'table',
+            json.dumps({
+                'player': self.name,
+                'action': action,
+                'middle': middle,
+                'next': self.next_player}))
+
+    def play(self, data):
+        if data['action'] != 'skip':
+            if "seven" in data['middle']:
+                self.draw_card()
+                self.draw_card()
+            elif "ace" in data['middle']:
+                self.publish('skip', data['middle'])
+                return
+
+        self.init_playable_cards(data['middle'])
+
+        if self.get_playable_card_count() == 0:
+            self.draw_card()
+            self.publish('drawcard', data['middle'])
+            return
+
+        card_to_play = self.choose_card()
+
+        mau_state = self.check_mau()
+        if mau_state == 0:
+            self.client.publish('table', json.dumps({
+                'action': 'won',
+                'player': self.name,
+                'next': self.next_player}))
+            self.won = True
+
+        self.publish('play', card_to_play)
 
     def to_dict(self):
         return {
@@ -27,7 +105,9 @@ class Player(object):
     def getCurrentPlayerType(self):
         return self.playerType
 
-    def draw_card(self, card):
+    def draw_card(self, card=None):
+        if not card:
+            card = Deck.get_random_card()
         self.hand.append(card)
 
     def get_playable_card_count(self):

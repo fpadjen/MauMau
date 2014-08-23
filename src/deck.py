@@ -1,19 +1,21 @@
 import random
+from random import randint
 
 
 class Deck:
+    english_card_colors = ['spades', 'hearts', 'clubs', 'diamonds']
+    english_card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10',
+                           'jack', 'queen', 'king', 'ace']
+
     def __init__(self, name=None):
-        english_card_colors = ['spades', 'hearts', 'clubs', 'diamonds']
-        english_card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10',
-                               'jack', 'queen', 'king', 'ace']
         self.deck = []
         self.middle_card = ''
-        self.deck = self.create_deck(english_card_colors, english_card_values)
+        self.deck = self.create_deck()
         self.middle_card = str(self.deck.pop())
 
-    def create_deck(self, colors, values):
-        for i in values:
-            for j in colors:
+    def create_deck(self):
+        for i in self.english_card_values:
+            for j in self.english_card_colors:
                 self.deck.append('{}_of_{}'.format(i, j))
                 self.randomize_cardstack()
         # debug
@@ -35,3 +37,11 @@ class Deck:
 
     def deal_card(self):
         return self.deck.pop()
+
+    @classmethod
+    def get_random_card(cls):
+        value = cls.english_card_values[
+            randint(0, len(cls.english_card_values) - 1)]
+        color = cls.english_card_colors[
+            randint(0, len(cls.english_card_colors) - 1)]
+        return '{}_of_{}'.format(value, color)
