@@ -3,6 +3,8 @@ from flask import Flask, send_from_directory
 from flask_sockets import Sockets
 from maumau import Game
 import random
+import time
+import json
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 sockets = Sockets(app)
@@ -18,14 +20,31 @@ def index():
     return app.send_static_file('index.html')
 
 
+class WebsocketConnection(object):
+    def __init__(self, ws):
+        self.ws = ws
+
+    def input_adapter(self, message):
+        if message:
+            self.ws.send(message)
+        return self.ws.receive()
+
+    def output_adapter(self, message):
+        if isinstance(message, dict):
+            print message
+            self.ws.send(json.dumps(message))
+        else:
+            self.ws.send(message)
+
+
 @sockets.route('/ws')
 def echo_socket(ws):
-    game = Game(output=ws.send)
+    wc = WebsocketConnection(ws)
+    game = Game(output=wc.output_adapter, input_device=wc.input_adapter)
     game.add_web_player()
     game.state.setCurrentPlayer(random.randint(0, game.state.getNumTotalPlayers()))
     game.deal_cards_to_players(game.state.getNumTotalPlayers(), game.card_stack)
     game.start()
 
     while True:
-        message = ws.receive()
-        ws.send(message)
+        time.sleep(10)
