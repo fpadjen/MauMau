@@ -65,6 +65,19 @@ class Player(Thread):
                 'next': self.next_player,
                 'number_of_cards': len(self.hand)}))
 
+    def check_card(self, card_to_play):
+        current_card = card_to_play.split('_of_')
+        current_middle = self.current_middle.split('_of_')
+        if current_middle == 'jack':
+            return True
+        if current_card == 'jack':
+            return True
+        if current_card[0] == current_middle[0]:
+            return True
+        if current_card[1] == current_middle[1]:
+            return True
+        return False
+
     def play(self, data):
         self.output_device({
             'player': self.to_dict(),
@@ -85,7 +98,12 @@ class Player(Thread):
             self.publish('drawcard', data['middle'])
             return
 
-        card_to_play = self.choose_card()
+        while True:
+            card_to_play = self.choose_card()
+            if self.check_card(card_to_play):
+                break
+            else:
+                print "Wrong card choosen by {}".format(self.name)
 
         mau_state = self.check_mau()
         if mau_state == 0:
