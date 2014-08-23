@@ -5,6 +5,8 @@ from maumau import Game
 import random
 import time
 import json
+from threading import Thread
+import redis
 
 app = Flask(
     __name__,
@@ -29,9 +31,11 @@ def index():
     return app.send_static_file('index.html')
 
 
-class WebsocketConnection(object):
-    def __init__(self, ws):
+class WebsocketConnection(Thread):
+    def __init__(self, ws, redis):
+        super(WebsocketConnection, self).__init__()
         self.ws = ws
+        self.redis = redis
 
     def input_adapter(self, message=''):
         if message:
@@ -45,11 +49,23 @@ class WebsocketConnection(object):
         else:
             self.ws.send(message)
 
+    def run(self):
+        pubsub = self.redis.pubsub()
+        pubsub.subscribe(['table'])
+        for item in pubsub.listen():
+            if item['type'] == 'subscribe':
+                continue
+            print item
+            self.ws.send(item['data'])
+
 
 @sockets.route('/ws')
 def echo_socket(ws):
-    wc = WebsocketConnection(ws)
-    game = Game()
+    REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
+    wc = WebsocketConnection(ws, redis.from_url(REDIS_URL))
+    wc.start()
+
+    game = Game(redis.from_url(REDIS_URL))
     game.add_player('bot1')
     game.add_player('bot2')
     game.add_player(
@@ -63,6 +79,3 @@ def echo_socket(ws):
         game.state.getNumTotalPlayers(),
         game.card_stack)
     game.start()
-
-    while True:
-        time.sleep(10)

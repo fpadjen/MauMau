@@ -1,6 +1,6 @@
 import maumau
 import unittest
-from mock import patch
+from mock import patch, Mock
 
 
 class MauMauTestCase(unittest.TestCase):
@@ -38,6 +38,14 @@ class MauMauTestCase(unittest.TestCase):
     def test_input_adapter(self, _input):
         maumau.input_adapter('message')
         self.assertTrue(_input.called)
+
+    @patch('maumau.Game')
+    @patch('__builtin__.raw_input')
+    def test_main(self, _input, game_class):
+        game = Mock()
+        game_class.return_value = game
+        _input.side_effect = ['bot', 'b', 'y', 'player', 'h', 'n']
+        maumau.main()
 
 if __name__ == '__main__':
     unittest.main()

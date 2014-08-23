@@ -1,11 +1,13 @@
 from game import Game
 import unittest
+from mock import Mock
 
 
 class GameTestCase(unittest.TestCase):
 
     def test_add_player(self):
-        game = Game()
+        redis = Mock()
+        game = Game(redis)
         list_length = len(game.playerList)
         game.add_player('player')
         self.assertEqual(list_length + 1, len(game.playerList))
