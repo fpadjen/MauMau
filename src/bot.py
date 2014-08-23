@@ -11,13 +11,25 @@ from deck import Deck
 from time import sleep
 
 
-def output_device(message):
-    print(message)
+class Interface(object):
+    def output_device(self, message):
+        raise NotImplemented
+
+    def input_device(self):
+        raise NotImplemented
 
 
-def input_device():
-    sleep(1)
-    return 0
+class Bot(Interface):
+    def __init__(self):
+        super(Bot, self).__init__()
+        self.player = None
+
+    def output_device(self, message):
+        print(message)
+
+    def input_device(self):
+        sleep(1)
+        return 0
 
 
 class WaitForMessage(Thread):
@@ -49,15 +61,17 @@ class WaitForMessage(Thread):
         print('WaitFor exit')
 
 
-def main():
+def start(interface_class):
     REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
     client = redis.from_url(REDIS_URL)
 
+    interface = interface_class()
     player = Player(
-        'bot{}'.format(randint(0, 1000)),
+        'human{}'.format(randint(0, 1000)),
         'h',
-        output_device=output_device,
-        input_device=input_device)
+        output_device=interface.output_device,
+        input_device=interface.input_device)
+    interface.player = player
 
     wait_for_message = WaitForMessage()
     wait_for_message.start()
@@ -101,6 +115,9 @@ def main():
                 'player': player.name,
                 'next': player.next_player}))
 
+
+def main():
+    start(Bot)
 
 if __name__ == '__main__':
     while True:
