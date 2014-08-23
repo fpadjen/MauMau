@@ -23,6 +23,7 @@ class Player(Thread):
         REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
         self.client = redis.from_url(REDIS_URL)
         self.won = False
+        self.current_middle = None
 
     def run(self):
         REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
@@ -52,6 +53,7 @@ class Player(Thread):
                 if data['before'] == self.next_player:
                     self.next_player = data['player']
                 continue
+            self.current_middle = data['middle']
             if data['next'] == self.name:
                 self.play(data)
 

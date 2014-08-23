@@ -21,35 +21,37 @@ class WebappTestCase(unittest.TestCase):
         rv = self.app.get('/')
         self.assertEqual(200, rv.status_code)
 
+    @patch('webapp.WaitForMessage')
+    @patch('webapp.Player')
     @patch('webapp.WebsocketConnection')
-    @patch('webapp.Game')
     @patch('webapp.time')
-    def test_echo_socket(self, time, game_class, ws):
-        game = Mock()
-        game_class.return_value = game
-        game.state.getNumTotalPlayers.return_value = 2
-
+    def test_echo_socket(self, time, ws, player, wait_for_message):
         time.sleep.side_effect = Exception
         ws = Mock()
 
-        webapp.echo_socket(ws)
-        self.assertTrue(game.start.called)
+        self.assertRaises(Exception, webapp.echo_socket, ws)
 
 
 class WebsocketConnectionTestCase(unittest.TestCase):
 
     def test_input_adapter(self):
         ws = Mock()
-        redis = Mock()
-        wc = WebsocketConnection(ws, redis)
+        wc = WebsocketConnection(ws)
+        player = Mock()
+        player.to_dict.return_value = {}
+        player.current_middle = 'middle'
+        wc.player = player
         wc.input_adapter()
-        self.assertEqual(0, ws.send.called)
+        self.assertEqual(1, ws.send.called)
         self.assertEqual(1, ws.receive.called)
 
     def test_input_adapter_with_message(self):
         ws = Mock()
-        redis = Mock()
-        wc = WebsocketConnection(ws, redis)
+        wc = WebsocketConnection(ws)
+        player = Mock()
+        player.to_dict.return_value = {}
+        player.current_middle = 'middle'
+        wc.player = player
         wc.input_adapter('message')
         self.assertEqual(1, ws.send.called)
         self.assertEqual(1, ws.receive.called)
@@ -57,8 +59,7 @@ class WebsocketConnectionTestCase(unittest.TestCase):
     @patch('webapp.json')
     def test_output_adapter(self, json):
         ws = Mock()
-        redis = Mock()
-        wc = WebsocketConnection(ws, redis)
+        wc = WebsocketConnection(ws)
         wc.output_adapter('aa')
         self.assertEqual(1, ws.send.called)
         self.assertEqual(0, json.dumps.called)
@@ -66,22 +67,11 @@ class WebsocketConnectionTestCase(unittest.TestCase):
     @patch('webapp.json')
     def test_output_adapter_dict(self, json):
         ws = Mock()
-        redis = Mock()
-        wc = WebsocketConnection(ws, redis)
+        wc = WebsocketConnection(ws)
         wc.output_adapter({'a': 'b'})
         self.assertEqual(1, ws.send.called)
         self.assertEqual(1, json.dumps.called)
 
-    def test_run(self):
-        ws = Mock()
-        pubsub = Mock()
-        pubsub.listen.return_value = [
-            {'type': 'subscribe'},
-            {'type': 'message', 'data': 'data'}]
-        redis = Mock()
-        redis.pubsub.return_value = pubsub
-        wc = WebsocketConnection(ws, redis)
-        wc.run()
 
 if __name__ == '__main__':
     unittest.main()

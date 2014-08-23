@@ -29,7 +29,8 @@ class PlayerTestCase(unittest.TestCase):
             {'type': 'message',
              'data': json.dumps({
                  'action': 'skip',
-                 'next': player.name})},
+                 'next': player.name,
+                 'middle': 'middle'})},
             {'type': 'message',
              'data': json.dumps({
                  'action': 'won',
