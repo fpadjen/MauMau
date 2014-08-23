@@ -31,6 +31,8 @@ class Player(object):
 
     def init_playable_cards(self, middle):
         self.playable_cards = []
+        if "Jack" in middle:
+            self.playable_cards = self.hand
         middle_value, middle_color = middle.split(' of ')
         for card in range(0, len(self.hand)):
             if middle_color in self.hand[card] or middle_value in self.hand[card]:

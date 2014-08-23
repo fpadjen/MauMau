@@ -24,7 +24,7 @@ class WebsocketConnection(object):
     def __init__(self, ws):
         self.ws = ws
 
-    def input_adapter(self, message):
+    def input_adapter(self, message=''):
         if message:
             self.ws.send(message)
         return self.ws.receive()
