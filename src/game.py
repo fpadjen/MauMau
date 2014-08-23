@@ -84,12 +84,18 @@ class Game(object):
             card_to_play = self.current_player.choose_card()
             self.card_stack.set_new_middle(card_to_play)
 
+            for player in self.playerList:
+                player.send({
+                    'action': 'other',
+                    'middle': self.card_stack.get_current_middle()})
+
             mau_state = self.current_player.check_mau()
             if mau_state == 0:
                 running = False
-                self.current_player.send(
-                    'Player {} won!'
-                    .format(self.current_player.getCurrentPlayerName()))
+                for player in self.playerList:
+                    player.send({
+                        'action': 'won',
+                        'winner': self.current_player.getCurrentPlayerName()})
                 sys.exit(0)
 
             self.state.nextPlayer()

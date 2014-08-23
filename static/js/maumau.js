@@ -19,14 +19,9 @@ $(document).ready(function() {
 
 	// Message Receved
 	function add_message(message) {
-		$('#output-area').append('<div>' +
+		$('#output-area').prepend('<div>' +
 				message + '</div>');
-		
-		var output =
-				$('#output-wrap');
-		var height =
-				output[0].scrollHeight;
-		output.scrollTop(height);
+		$('#output-wrap').scrollTop(0);
 	}
 			
 	function select_card(e) {
@@ -37,16 +32,19 @@ $(document).ready(function() {
 			function(ev) {
 				add_message(ev.data);
 				var data = JSON.parse(ev.data);
-				$('#cards').empty();
-				for (var i in data.player.hand) {
-					var card = data.player.hand[i];
-					if (data.player.playable_cards.indexOf(parseInt(i)) > -1) {
-						$('#cards').append('<div class="col-md-1 playable"><img class="playercard" src="/static/images/' + card +'.png" alt="' + i + '"></div>');
-					} else {
-						$('#cards').append('<div class="col-md-1 unplayable"><img class="playercard" src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+				
+				if (data.action != 'other') {
+					$('#cards').empty();
+					for (var i in data.player.hand) {
+						var card = data.player.hand[i];
+						if (data.player.playable_cards.indexOf(parseInt(i)) > -1) {
+							$('#cards').append('<div class="col-md-1 playable"><img class="playercard" src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+						} else {
+							$('#cards').append('<div class="col-md-1 unplayable"><img class="playercard" src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+						}
 					}
+					$('.playable').click(select_card);
 				}
-				$('.playable').click(select_card);
 				
 				$('#middle').empty();
 				$('#middle').append('<div class="col-md-1 playable"><img class="playercard" src="/static/images/' + data.middle +'.png" alt="middle"></div>');

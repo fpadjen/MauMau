@@ -1,6 +1,7 @@
+import time
+
 
 class Player(object):
-
     def __init__(self,
                  name=None,
                  playerType=None,
@@ -56,6 +57,7 @@ class Player(object):
     def choose_card(self):
         if self.getCurrentPlayerType() == 'h':
             return self.hand.pop(int(self.input_device()))
+        time.sleep(1)
         return self.hand.pop(0)
 
     def check_mau(self):
