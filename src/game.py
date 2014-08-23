@@ -24,13 +24,14 @@ class Game(object):
                 self.playerList[count].draw_card(stack.deal_card())
 
     def add_web_player(self):
-        self.playerList.append(Player('player', 'h', output=self.output))
-        self.state.incTotalPlayerCount()
-
         self.playerList.append(Player('bot1', 'b', output=self.output))
         self.state.incTotalPlayerCount()
 
         self.playerList.append(Player('bot2', 'b', output=self.output))
+        self.state.incTotalPlayerCount()
+
+    def add_player(self):
+        self.playerList.append(Player('player', 'h', output=self.output))
         self.state.incTotalPlayerCount()
 
     def check_special_cards(self):
@@ -45,12 +46,6 @@ class Game(object):
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
         else:
             self.output("You can play a card from your hand or draw from the stack.")
-
-    def main(self):
-        self.initPlayer()
-        self.state.setCurrentPlayer(random.randint(0, self.state.getNumTotalPlayers()))
-        self.deal_cards_to_players(self.state.getNumTotalPlayers(), self.card_stack)
-        self.start()
 
     def start(self):
         # main play loop starts here
@@ -92,6 +87,12 @@ class Game(object):
                 sys.exit(0)
 
             self.state.nextPlayer()
+
+    def main(self):
+        self.initPlayer()
+        self.state.setCurrentPlayer(random.randint(0, self.state.getNumTotalPlayers()))
+        self.deal_cards_to_players(self.state.getNumTotalPlayers(), self.card_stack)
+        self.start()
 
     def initPlayer(self):
         more_players = True
