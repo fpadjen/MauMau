@@ -27,9 +27,6 @@ class Player(object):
     def getCurrentPlayerType(self):
         return self.playerType
 
-    def getPlayerlist(self):
-        return self.playerList
-
     def draw_card(self, card):
         self.hand.append(card)
 
@@ -42,7 +39,8 @@ class Player(object):
     def init_playable_cards(self, middle):
         self.playable_cards = []
         if "jack" in middle:
-            self.playable_cards = self.hand
+            self.playable_cards = [i for i, _ in enumerate(self.hand)]
+            return
         middle_value, middle_color = middle.split('_of_')
         for card in range(0, len(self.hand)):
             if (middle_color in self.hand[card]
@@ -72,9 +70,6 @@ class Player(object):
 
     def get_card_count(self):
         return len(self.hand)
-
-    def display_hand(self):
-        self.output(self.hand)
 
     def send(self, message):
         if self.playerType == 'h':

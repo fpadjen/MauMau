@@ -5,6 +5,7 @@ import sys
 from player import Player
 from deck import Deck
 from state import State
+import json
 
 
 class Game(object):
@@ -13,6 +14,9 @@ class Game(object):
     card_stack = Deck()
     state = State()
     current_player = None
+
+    def __init__(self, redis):
+        self.redis = redis
 
     def deal_cards_to_players(self, players, stack):
         for count in range(0, players):
@@ -84,18 +88,16 @@ class Game(object):
             card_to_play = self.current_player.choose_card()
             self.card_stack.set_new_middle(card_to_play)
 
-            for player in self.playerList:
-                player.send({
-                    'action': 'other',
-                    'middle': self.card_stack.get_current_middle()})
+            self.redis.publish('table', json.dumps({
+                'action': 'other',
+                'middle': self.card_stack.get_current_middle()}))
 
             mau_state = self.current_player.check_mau()
             if mau_state == 0:
                 running = False
-                for player in self.playerList:
-                    player.send({
-                        'action': 'won',
-                        'winner': self.current_player.getCurrentPlayerName()})
+                self.redis.publish('table', json.dumps({
+                    'action': 'won',
+                    'winner': self.current_player.getCurrentPlayerName()}))
                 sys.exit(0)
 
             self.state.nextPlayer()

@@ -1,7 +1,3 @@
-#
-# This class holds the various states present in the game
-#
-
 
 class State:
 

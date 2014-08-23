@@ -1,14 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import random
-
-#
-# This file contains the class for handling the stack and middle in maumau
-#
 
 
 class Deck:
-
     def __init__(self, name=None):
         english_card_colors = ['spades', 'hearts', 'clubs', 'diamonds']
         english_card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10',
@@ -42,6 +35,3 @@ class Deck:
 
     def deal_card(self):
         return self.deck.pop()
-
-    def card_back_to_stack(self, card):
-        self.deck.append(card)
