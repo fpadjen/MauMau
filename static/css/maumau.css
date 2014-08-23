@@ -1,6 +1,13 @@
 .output {
 	height: 300px;
 	overflow: scroll;
-  background-color: grey;
+	background-color: grey;
+}
 
+.playercard {
+	height: 200px;
+}
+
+.unplayable {
+	opacity: 0.4;
 }

@@ -12,10 +12,7 @@ class Game(object):
     playerList = []
     card_stack = Deck()
     state = State()
-
-    def __init__(self, output, input_device):
-        self.output = output
-        self.input = input_device
+    current_player = None
 
     def deal_cards_to_players(self, players, stack):
         for count in range(0, players):
@@ -23,103 +20,89 @@ class Game(object):
                 # players[count].draw_card(stack.pop())
                 self.playerList[count].draw_card(stack.deal_card())
 
-    def initPlayer(self):
-        more_players = True
-        while more_players:
-            self.output("Enter player name please:")
-            current_name = self.input()
-            self.output("Is this a human or computer player?")
-            self.output("Press h if the player is human, b if it is a bot.")
-            player_type = self.input()
-
-            if (player_type.lower() == "h") or player_type.lower() == "b":
-                # create new object, name it by number starting with 0
-                # add name to list playerList for access
-                player = Player(current_name, player_type, output=self.output)
-                self.playerList.append(player)
-                self.output("debug: new player object created %r" % (player.getCurrentPlayerName()))
-                self.state.incTotalPlayerCount()
-            else:
-                self.output("Please enter h or b to identify player type.")
-                continue
-
-            self.output("Add another player? (y/n)")
-            if self.input() == "y":
-                continue
-            else:
-                more_players = False
-
-    def add_web_player(self):
-        self.playerList.append(Player('player', 'h', output=self.output))
-        self.state.incTotalPlayerCount()
-
-        self.playerList.append(Player('bot1', 'b', output=self.output))
-        self.state.incTotalPlayerCount()
-
-        self.playerList.append(Player('bot2', 'b', output=self.output))
-        self.state.incTotalPlayerCount()
-
-        self.playerList.append(Player('bot3', 'b', output=self.output))
+    def add_player(
+        self,
+        name,
+        player_type='b',
+        output_device=None,
+        input_device=None
+    ):
+        self.playerList.append(
+            Player(
+                name,
+                player_type,
+                output_device=output_device,
+                input_device=input_device))
         self.state.incTotalPlayerCount()
 
     def check_special_cards(self):
-        if "Seven" in self.card_stack.get_current_middle():
-            self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
-            self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
-        elif "Jack" in self.card_stack.get_current_middle():
-            self.playable_cards = []
-        elif "Ace" in self.card_stack.get_current_middle():
-            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
+        if "seven" in self.card_stack.get_current_middle():
+            self.current_player.draw_card(self.card_stack.deal_card())
+            self.current_player.draw_card(self.card_stack.deal_card())
+        elif "jack" in self.card_stack.get_current_middle():
+            pass
+        elif "ace" in self.card_stack.get_current_middle():
+            self.current_player.send({
+                'action': 'skip',
+                'middle': self.card_stack.get_current_middle(),
+                'player': self.current_player.to_dict()})
             self.state.nextPlayer()
-            self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
+            self.state.setCurrentPlayer(
+                self.state.getCurrentPlayer() % len(self.playerList))
+            self.current_player = self.playerList[
+                self.state.getCurrentPlayer()]
         else:
-            self.output("You can play a card from your hand or draw from the stack.")
-
-    def main(self):
-        self.initPlayer()
-        self.state.setCurrentPlayer(random.randint(0, self.state.getNumTotalPlayers()))
-        self.deal_cards_to_players(self.state.getNumTotalPlayers(), self.card_stack)
-        self.start()
+            pass
 
     def start(self):
         # main play loop starts here
         running = True
         while running:
-            self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
-
+            self.state.setCurrentPlayer(
+                self.state.getCurrentPlayer() % len(self.playerList))
+            self.current_player = self.playerList[
+                self.state.getCurrentPlayer()]
             self.check_special_cards()
 
-            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
+            self.current_player.init_playable_cards(
+                self.card_stack.get_current_middle())
 
-            self.playerList[self.state.getCurrentPlayer()].init_playable_cards(self.card_stack.get_current_middle())
-            self.output("debug: playable cards %r" % (self.playerList[self.state.getCurrentPlayer()].get_playable_cards()))
+            if self.current_player.get_playable_card_count() == 0:
+                self.card_stack.randomize_cardstack()
+                self.current_player.draw_card(self.card_stack.deal_card())
+                self.current_player.send({
+                    'action': 'drawcard',
+                    'middle': self.card_stack.get_current_middle(),
+                    'player': self.current_player.to_dict()})
+                continue
 
-            if self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "h":
-                # human player
-                self.output("Middle card is %r" % (self.card_stack.get_current_middle()))
-                if self.playerList[self.state.getCurrentPlayer()].get_playable_card_count() == 0:
-                    self.card_stack.randomize_cardstack()
-                    self.output("You do not have a card you can play. Drawing a card...")
-                    self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
-                else:
-                    self.output("You can play the following cards:")
-                    self.output("%r" % self.playerList[self.state.getCurrentPlayer()].get_playable_cards())
-                    i = int(self.input("Enter number from above: "))
-                    self.card_stack.set_new_middle(self.playerList[self.state.getCurrentPlayer()].get_card_to_play(i))
-            elif self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "b":
-                # bot player
-                card_to_play = self.playerList[self.state.getCurrentPlayer()].choose_card()
-                if self.playerList[self.state.getCurrentPlayer()].get_playable_card_count() == 0:
-                    self.card_stack.randomize_cardstack()
-                    self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
-                else:
-                    self.card_stack.set_new_middle(card_to_play)
-                    self.output('%s says: I have played the %s' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName(), self.card_stack.get_current_middle()))
+            self.current_player.send({
+                'action': 'turn',
+                'middle': self.card_stack.get_current_middle(),
+                'player': self.current_player.to_dict()})
 
-            mau_state = self.playerList[self.state.getCurrentPlayer()].check_mau()
+            card_to_play = self.current_player.choose_card()
+            self.card_stack.set_new_middle(card_to_play)
+
+            for player in self.playerList:
+                player.send({
+                    'action': 'other',
+                    'middle': self.card_stack.get_current_middle()})
+
+            mau_state = self.current_player.check_mau()
             if mau_state == 0:
                 running = False
-                self.output('Player %s won!' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
+                for player in self.playerList:
+                    player.send({
+                        'action': 'won',
+                        'winner': self.current_player.getCurrentPlayerName()})
                 sys.exit(0)
 
             self.state.nextPlayer()
+
+    def main(self):
+        self.state.setCurrentPlayer(
+            random.randint(0, self.state.getNumTotalPlayers()))
+        self.deal_cards_to_players(
+            self.state.getNumTotalPlayers(), self.card_stack)
+        self.start()
