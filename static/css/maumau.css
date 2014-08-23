@@ -1,4 +1,11 @@
 .output {
-	height: 200px;
+	height: 300px;
 	overflow: scroll;
+  background-color: grey;
+
+}
+
+.all {
+  height: 100%
+  background-color: grey;
 }
