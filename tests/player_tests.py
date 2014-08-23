@@ -1,9 +1,136 @@
 from player import Player
 import unittest
 from mock import Mock, patch
+import json
 
 
 class PlayerTestCase(unittest.TestCase):
+
+    @patch('player.redis')
+    @patch('player.os')
+    def test_run(self, os, redis):
+        player = Player('player')
+        player.play = Mock()
+        pubsub = Mock()
+        pubsub.listen.return_value = [
+            {'type': 'subscribe'},
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'quit',
+                 'player': 'name'})},
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'won',
+                 'player': 'name'})},
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'join',
+                 'before': 'name'})},
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'skip',
+                 'next': player.name})},
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'won',
+                 'player': player.name})},
+        ]
+        client = Mock()
+        client.pubsub.return_value = pubsub
+        redis.from_url.return_value = client
+
+        player.run()
+        self.assertTrue(client.pubsub.called)
+        self.assertTrue(pubsub.subscribe.called)
+
+    @patch('player.redis')
+    @patch('player.os')
+    def test_run_quit_self(self, os, redis):
+        player = Player('player')
+        player.play = Mock()
+        pubsub = Mock()
+        pubsub.listen.return_value = [
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'quit',
+                 'player': player.name})},
+        ]
+        client = Mock()
+        client.pubsub.return_value = pubsub
+        redis.from_url.return_value = client
+
+        player.run()
+        self.assertTrue(client.pubsub.called)
+        self.assertTrue(pubsub.subscribe.called)
+
+    @patch('player.redis')
+    @patch('player.os')
+    def test_run_quit_other(self, os, redis):
+        player = Player('player')
+        player.play = Mock()
+        pubsub = Mock()
+        pubsub.listen.return_value = [
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'quit',
+                 'player': 'other'})},
+        ]
+        client = Mock()
+        client.pubsub.return_value = pubsub
+        redis.from_url.return_value = client
+
+        player.run()
+        self.assertTrue(client.pubsub.called)
+        self.assertTrue(pubsub.subscribe.called)
+
+    @patch('player.redis')
+    @patch('player.os')
+    def test_run_won_self_next(self, os, redis):
+        player = Player('player')
+        player.next_player = 'winner'
+        player.play = Mock()
+        pubsub = Mock()
+        pubsub.listen.return_value = [
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'won',
+                 'player': 'winner',
+                 'next': 'next'})},
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'won',
+                 'player': 'looser',
+                 'next': 'next'})},
+        ]
+        client = Mock()
+        client.pubsub.return_value = pubsub
+        redis.from_url.return_value = client
+
+        player.run()
+        self.assertTrue(client.pubsub.called)
+        self.assertTrue(pubsub.subscribe.called)
+
+    @patch('player.redis')
+    @patch('player.os')
+    def test_run_won_join_self_next(self, os, redis):
+        player = Player('player')
+        player.next_player = 'winner'
+        player.play = Mock()
+        pubsub = Mock()
+        pubsub.listen.return_value = [
+            {'type': 'message',
+             'data': json.dumps({
+                 'action': 'join',
+                 'before': player.next_player,
+                 'player': 'player'})},
+        ]
+        client = Mock()
+        client.pubsub.return_value = pubsub
+        redis.from_url.return_value = client
+
+        player.run()
+        self.assertTrue(client.pubsub.called)
+        self.assertTrue(pubsub.subscribe.called)
 
     def test_to_dict(self):
         player = Player('player')
