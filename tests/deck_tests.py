@@ -26,5 +26,8 @@ class DeckTestCase(unittest.TestCase):
         deck.deck[-1] = 'card'
         self.assertEqual('card', deck.deal_card())
 
+    def test_get_random_card(self):
+        Deck.get_random_card()
+
 if __name__ == '__main__':
     unittest.main()

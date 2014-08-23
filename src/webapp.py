@@ -35,7 +35,6 @@ class WebsocketConnection(Thread, Interface):
         self.player = None
 
     def input_device(self, message=''):
-        print 'input_adapter'
         data = {'player': self.player.to_dict(),
                 'middle': self.player.current_middle}
         self.ws.send(json.dumps(data))
@@ -44,7 +43,6 @@ class WebsocketConnection(Thread, Interface):
         return self.ws.receive()
 
     def output_device(self, message):
-        print 'output_adapter'
         if isinstance(message, dict):
             print message
             self.ws.send(json.dumps(message))
