@@ -62,7 +62,8 @@ class Player(Thread):
                 'player': self.name,
                 'action': action,
                 'middle': middle,
-                'next': self.next_player}))
+                'next': self.next_player,
+                'number_of_cards': len(self.hand)}))
 
     def play(self, data):
         self.output_device({
