@@ -18,7 +18,7 @@ class Bot(Interface):
 
 
 def main():
-    start(Bot)
+    start(Bot())
 
 if __name__ == '__main__':
     while True:
