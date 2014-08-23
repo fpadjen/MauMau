@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-import json
-
-#
-# This file is imported by maumau.py
-# It contains the player class
-#
-
 
 class Player(object):
 

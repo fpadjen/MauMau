@@ -59,9 +59,6 @@ class Game(object):
         self.playerList.append(Player('bot2', 'b', output=self.output))
         self.state.incTotalPlayerCount()
 
-        self.playerList.append(Player('bot3', 'b', output=self.output))
-        self.state.incTotalPlayerCount()
-
     def check_special_cards(self):
         if "Seven" in self.card_stack.get_current_middle():
             self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
