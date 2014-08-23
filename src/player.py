@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 
 #
 # This file is imported by maumau.py
@@ -6,7 +7,7 @@
 #
 
 
-class Player:
+class Player(object):
 
     def __init__(self, name=None, playerType=None, output=None):
         self.name = name
@@ -15,8 +16,8 @@ class Player:
         self.playable_cards = []
         self.output = output
 
-    def __repr__(self):
-        return self.name
+    def to_dict(self):
+        return {'name': self.name, 'hand': self.hand, 'playable_cards': self.playable_cards}
 
     def getCurrentPlayerName(self):
         return self.name

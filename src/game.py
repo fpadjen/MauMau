@@ -88,14 +88,12 @@ class Game(object):
         running = True
         while running:
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
-            self.output('%s, your turn to play!' % (self.playerList[self.state.getCurrentPlayer()]))
-            self.output('The current card in the middle is the %s' % (self.card_stack.get_current_middle()))
+            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
             self.check_special_cards()
-            self.output('You currently hold the following cards in your hand.')
-            self.playerList[self.state.getCurrentPlayer()].display_hand()
 
             self.playerList[self.state.getCurrentPlayer()].init_playable_cards(self.card_stack.get_current_middle())
             self.output("debug: playable cards %r" % (self.playerList[self.state.getCurrentPlayer()].get_playable_cards()))
+
             if self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "h":
                 # human player
                 self.output("Middle card is %r" % (self.card_stack.get_current_middle()))

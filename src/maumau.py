@@ -4,7 +4,14 @@ from game import Game
 
 
 def print_adapter(data):
-    print data
+    if isinstance(data, dict):
+        if data['action'] == 'turn':
+            print '{}, your turn to play!'.format(data['player'])
+            print 'The current card in the middle is the {}'.format(data['middle'])
+        else:
+            print data
+    else:
+        print data
 
 
 def input_adapter(message=''):
