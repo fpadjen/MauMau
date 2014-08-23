@@ -14,25 +14,14 @@ class Game(object):
     state = State()
     current_player = None
 
-    def __init__(self, output, input_device):
-        self.output = output
-        self.input = input_device
-
     def deal_cards_to_players(self, players, stack):
         for count in range(0, players):
             for _ in range(0, 6):
                 # players[count].draw_card(stack.pop())
                 self.playerList[count].draw_card(stack.deal_card())
 
-    def add_web_player(self):
-        self.playerList.append(Player('bot1', 'b', output=self.output))
-        self.state.incTotalPlayerCount()
-
-        self.playerList.append(Player('bot2', 'b', output=self.output))
-        self.state.incTotalPlayerCount()
-
-    def add_player(self):
-        self.playerList.append(Player('player', 'h', output=self.output))
+    def add_player(self, name, player_type='b', output_device=None, input_device=None):
+        self.playerList.append(Player(name, player_type, output_device=output_device, input_device=input_device))
         self.state.incTotalPlayerCount()
 
     def check_special_cards(self):
@@ -42,12 +31,12 @@ class Game(object):
         elif "Jack" in self.card_stack.get_current_middle():
             pass
         elif "Ace" in self.card_stack.get_current_middle():
-            self.output({'action': 'skip', 'middle': self.card_stack.get_current_middle(), 'player': self.current_player.to_dict()})
+            self.current_player.send({'action': 'skip', 'middle': self.card_stack.get_current_middle(), 'player': self.current_player.to_dict()})
             self.state.nextPlayer()
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
             self.current_player = self.playerList[self.state.getCurrentPlayer()]
         else:
-            self.output("You can play a card from your hand or draw from the stack.")
+            self.current_player.send("You can play a card from your hand or draw from the stack.")
 
     def start(self):
         # main play loop starts here
@@ -62,54 +51,23 @@ class Game(object):
             if self.current_player.get_playable_card_count() == 0:
                 self.card_stack.randomize_cardstack()
                 self.current_player.draw_card(self.card_stack.deal_card())
-                self.output({'action': 'drawcard', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
+                self.current_player.send({'action': 'drawcard', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
                 continue
 
-            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
+            self.current_player.send({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
 
-            if self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "h":
-                i = int(self.input())
-                self.card_stack.set_new_middle(self.playerList[self.state.getCurrentPlayer()].get_card_to_play(i))
-            elif self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "b":
-                card_to_play = self.current_player.choose_card()
-                self.card_stack.set_new_middle(card_to_play)
-                self.output('%s says: I have played the %s' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName(), self.card_stack.get_current_middle()))
+            card_to_play = self.current_player.choose_card()
+            self.card_stack.set_new_middle(card_to_play)
 
             mau_state = self.current_player.check_mau()
             if mau_state == 0:
                 running = False
-                self.output('Player %s won!' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
+                self.current_player.send('Player %s won!' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
                 sys.exit(0)
 
             self.state.nextPlayer()
 
     def main(self):
-        self.initPlayer()
         self.state.setCurrentPlayer(random.randint(0, self.state.getNumTotalPlayers()))
         self.deal_cards_to_players(self.state.getNumTotalPlayers(), self.card_stack)
         self.start()
-
-    def initPlayer(self):
-        more_players = True
-        while more_players:
-            self.output("Enter player name please:")
-            current_name = self.input()
-            self.output("Is this a human or computer player?")
-            self.output("Press h if the player is human, b if it is a bot.")
-            player_type = self.input()
-
-            if (player_type.lower() == "h") or player_type.lower() == "b":
-                # create new object, name it by number starting with 0
-                # add name to list playerList for access
-                player = Player(current_name, player_type, output=self.output)
-                self.playerList.append(player)
-                self.state.incTotalPlayerCount()
-            else:
-                self.output("Please enter h or b to identify player type.")
-                continue
-
-            self.output("Add another player? (y/n)")
-            if self.input() == "y":
-                continue
-            else:
-                more_players = False
