@@ -36,7 +36,8 @@ class WebsocketConnection(Thread, Interface):
 
     def input_device(self, message=''):
         data = {'player': self.player.to_dict(),
-                'middle': self.player.current_middle}
+                'middle': self.player.current_middle,
+                'we': True}
         self.ws.send(json.dumps(data))
         if message:
             self.ws.send(message)
@@ -45,6 +46,7 @@ class WebsocketConnection(Thread, Interface):
     def output_device(self, message):
         if isinstance(message, dict):
             print message
+            message['we'] = False
             self.ws.send(json.dumps(message))
         else:
             self.ws.send(message)

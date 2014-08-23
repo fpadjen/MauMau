@@ -45,14 +45,12 @@ class Interface(object):
         raise NotImplemented
 
 
-def start(interface_class):
+def start(interface):
     REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
     client = redis.from_url(REDIS_URL)
 
-    interface = interface_class()
     player = Player(
         'human{}'.format(randint(0, 1000)),
-        'h',
         output_device=interface.output_device,
         input_device=interface.input_device)
     interface.player = player

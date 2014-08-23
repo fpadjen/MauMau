@@ -33,7 +33,7 @@ $(document).ready(function() {
 				add_message(ev.data);
 				var data = JSON.parse(ev.data);
 				
-				if (data.action != 'other') {
+				if (data.we) {
 					$('#cards').empty();
 					for (var i in data.player.hand) {
 						var card = data.player.hand[i];

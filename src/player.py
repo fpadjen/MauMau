@@ -1,4 +1,3 @@
-import time
 import os
 import redis
 from threading import Thread
@@ -9,13 +8,11 @@ from deck import Deck
 class Player(Thread):
     def __init__(self,
                  name=None,
-                 playerType=None,
                  output_device=None,
                  input_device=None):
         super(Player, self).__init__()
         self.name = name
-        self.hand = []
-        self.playerType = playerType
+        self.hand = [Deck.get_random_card() for _ in range(7)]
         self.playable_cards = []
         self.output_device = output_device
         self.input_device = input_device
@@ -35,6 +32,7 @@ class Player(Thread):
             if message['type'] == 'subscribe':
                 continue
             data = json.loads(message['data'])
+            self.output_device(data)
             print('player: {} next: {} data: {}'
                   .format(self.name, self.next_player, data))
             if data['action'] == 'quit':
@@ -64,9 +62,14 @@ class Player(Thread):
                 'player': self.name,
                 'action': action,
                 'middle': middle,
-                'next': self.next_player}))
+                'next': self.next_player,
+                'number_of_cards': len(self.hand)}))
 
     def play(self, data):
+        self.output_device({
+            'player': self.to_dict(),
+            'middle': self.current_middle})
+
         if data['action'] != 'skip':
             if "seven" in data['middle']:
                 self.draw_card()
@@ -92,6 +95,10 @@ class Player(Thread):
                 'next': self.next_player}))
             self.won = True
 
+        self.output_device({
+            'player': self.to_dict(),
+            'middle': self.current_middle})
+
         self.publish('play', card_to_play)
 
     def to_dict(self):
@@ -100,12 +107,6 @@ class Player(Thread):
             'hand': self.hand,
             'playable_cards': self.playable_cards
         }
-
-    def getCurrentPlayerName(self):
-        return self.name
-
-    def getCurrentPlayerType(self):
-        return self.playerType
 
     def draw_card(self, card=None):
         if not card:
@@ -129,16 +130,8 @@ class Player(Thread):
                     or middle_value in self.hand[card]):
                 self.playable_cards.append(card)
 
-    # FIXME: function name here should reflect human player
-    def get_card_to_play(self, number):
-        self.check_mau()
-        return self.hand.pop(number)
-
     def choose_card(self):
-        if self.getCurrentPlayerType() == 'h':
-            return self.hand.pop(int(self.input_device()))
-        time.sleep(1)
-        return self.hand.pop(0)
+        return self.hand.pop(int(self.input_device()))
 
     def check_mau(self):
         if len(self.hand) == 1:
@@ -149,10 +142,3 @@ class Player(Thread):
             return 0
         else:
             return 1
-
-    def get_card_count(self):
-        return len(self.hand)
-
-    def send(self, message):
-        if self.playerType == 'h':
-            self.output_device(message)
