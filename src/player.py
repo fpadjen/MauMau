@@ -1,4 +1,3 @@
-import time
 import os
 import redis
 from threading import Thread
@@ -101,12 +100,6 @@ class Player(Thread):
             'playable_cards': self.playable_cards
         }
 
-    def getCurrentPlayerName(self):
-        return self.name
-
-    def getCurrentPlayerType(self):
-        return self.playerType
-
     def draw_card(self, card=None):
         if not card:
             card = Deck.get_random_card()
@@ -129,16 +122,8 @@ class Player(Thread):
                     or middle_value in self.hand[card]):
                 self.playable_cards.append(card)
 
-    # FIXME: function name here should reflect human player
-    def get_card_to_play(self, number):
-        self.check_mau()
-        return self.hand.pop(number)
-
     def choose_card(self):
-        if self.getCurrentPlayerType() == 'h':
-            return self.hand.pop(int(self.input_device()))
-        time.sleep(1)
-        return self.hand.pop(0)
+        return self.hand.pop(int(self.input_device()))
 
     def check_mau(self):
         if len(self.hand) == 1:
@@ -149,10 +134,3 @@ class Player(Thread):
             return 0
         else:
             return 1
-
-    def get_card_count(self):
-        return len(self.hand)
-
-    def send(self, message):
-        if self.playerType == 'h':
-            self.output_device(message)
