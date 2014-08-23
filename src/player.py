@@ -65,6 +65,10 @@ class Player(Thread):
                 'next': self.next_player}))
 
     def play(self, data):
+        self.output_device({
+            'player': self.to_dict(),
+            'middle': self.current_middle})
+
         if data['action'] != 'skip':
             if "seven" in data['middle']:
                 self.draw_card()
@@ -89,6 +93,10 @@ class Player(Thread):
                 'player': self.name,
                 'next': self.next_player}))
             self.won = True
+
+        self.output_device({
+            'player': self.to_dict(),
+            'middle': self.current_middle})
 
         self.publish('play', card_to_play)
 
