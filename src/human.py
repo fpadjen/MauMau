@@ -9,6 +9,7 @@ import time
 import json
 from deck import Deck
 from time import sleep
+from bot import WaitForMessage
 
 
 class Human(object):
@@ -21,35 +22,6 @@ class Human(object):
     def input_device(self):
         print(self.player.to_dict())
         return int(raw_input())
-
-
-class WaitForMessage(Thread):
-    def __init__(self):
-        super(WaitForMessage, self).__init__()
-        self.active = True
-        self.waiting = True
-        self.known_player = None
-
-    def run(self):
-        REDIS_URL = os.environ.get('OPENREDIS_URL', 'redis://localhost:6379')
-        client = redis.from_url(REDIS_URL)
-        pubsub = client.pubsub()
-        pubsub.subscribe(['table'])
-
-        for message in pubsub.listen():
-            if self.active:
-                print('WaitFor: {}'.format(message))
-                if message['type'] == 'message':
-                    data = json.loads(message['data'])
-                    if data['action'] == 'quit':
-                        continue
-                    if 'player' in data:
-                        self.known_player = data['player']
-                        self.waiting = False
-                        break
-            else:
-                break
-        print('WaitFor exit')
 
 
 def main():
