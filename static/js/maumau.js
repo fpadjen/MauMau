@@ -29,6 +29,10 @@ $(document).ready(function() {
 		output.scrollTop(height);
 	}
 			
+	function select_card(e) {
+		websocket.send(e.target.alt);
+	}
+	
 	websocket.onmessage =
 			function(ev) {
 				add_message(ev.data);
@@ -36,8 +40,13 @@ $(document).ready(function() {
 				$('#cards').empty();
 				for (var i in data.player.hand) {
 					var card = data.player.hand[i];
-					$('#cards').append('<div class="col-md-1"><img src="/static/images/' + card +'.png" alt="bla"></div>');
+					if (data.player.playable_cards.indexOf(parseInt(i)) > -1) {
+						$('#cards').append('<div class="col-md-1 playable"><img src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+					} else {
+						$('#cards').append('<div class="col-md-1 unplayable"><img src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+					}
 				}
+				$('.playable').click(select_card);
 				
 			};
 

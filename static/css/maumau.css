@@ -4,3 +4,7 @@
   background-color: grey;
 
 }
+
+.unplayable {
+	opacity: 0.4;
+}
