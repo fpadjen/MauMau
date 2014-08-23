@@ -64,16 +64,14 @@ class Game(object):
 
     def check_special_cards(self):
         if "Seven" in self.card_stack.get_current_middle():
-            self.output("You must draw 2 cards!")
             self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
             self.playerList[self.state.getCurrentPlayer()].draw_card(self.card_stack.deal_card())
         elif "Jack" in self.card_stack.get_current_middle():
-            self.output("You can play any card you want!")
+            self.playable_cards = []
         elif "Ace" in self.card_stack.get_current_middle():
-            self.output('You have bad luck, %s' % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
+            self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
             self.state.nextPlayer()
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
-            self.output("%s, your turn." % (self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerName()))
         else:
             self.output("You can play a card from your hand or draw from the stack.")
 
