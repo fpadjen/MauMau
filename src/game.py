@@ -25,18 +25,18 @@ class Game(object):
         self.state.incTotalPlayerCount()
 
     def check_special_cards(self):
-        if "Seven" in self.card_stack.get_current_middle():
+        if "seven" in self.card_stack.get_current_middle():
             self.current_player.draw_card(self.card_stack.deal_card())
             self.current_player.draw_card(self.card_stack.deal_card())
-        elif "Jack" in self.card_stack.get_current_middle():
+        elif "jack" in self.card_stack.get_current_middle():
             pass
-        elif "Ace" in self.card_stack.get_current_middle():
+        elif "ace" in self.card_stack.get_current_middle():
             self.current_player.send({'action': 'skip', 'middle': self.card_stack.get_current_middle(), 'player': self.current_player.to_dict()})
             self.state.nextPlayer()
             self.state.setCurrentPlayer(self.state.getCurrentPlayer() % len(self.playerList))
             self.current_player = self.playerList[self.state.getCurrentPlayer()]
         else:
-            self.current_player.send("You can play a card from your hand or draw from the stack.")
+            pass
 
     def start(self):
         # main play loop starts here

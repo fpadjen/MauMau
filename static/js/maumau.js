@@ -32,6 +32,13 @@ $(document).ready(function() {
 	websocket.onmessage =
 			function(ev) {
 				add_message(ev.data);
+				var data = JSON.parse(ev.data);
+				$('#cards').empty();
+				for (var i in data.player.hand) {
+					var card = data.player.hand[i];
+					$('#cards').append('<div class="col-md-1"><img src="/static/images/' + card +'.png" alt="bla"></div>');
+				}
+				
 			};
 
 	// Error
@@ -46,7 +53,6 @@ $(document).ready(function() {
 			var message = $('#message')[0].value;
 			websocket.send(message);
 			$('#message')[0].value = '';
-			add_message(message);
 			return false;
 		}
 	}

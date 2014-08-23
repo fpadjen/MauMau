@@ -6,8 +6,10 @@
 
 <link rel="icon" type="image/ico" href="/static/images/favicon.ico">
 
-<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
-<link rel="stylesheet" href="/bower_components/jquery-ui/themes/flick/jquery-ui.css">
+<link rel="stylesheet"
+	href="/bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet"
+	href="/bower_components/jquery-ui/themes/flick/jquery-ui.css">
 <link rel="stylesheet" href="/static/css/maumau.css">
 
 <script src="/bower_components/jquery/dist/jquery.js"></script>
@@ -18,36 +20,53 @@
 </head>
 
 <body>
-<div class="container-fluid">
+	<div class="container-fluid">
 
-  <div class="row row-offcanvas row-offcanvas-right">
+		<div class="row row-offcanvas row-offcanvas-right">
 
-    <div class="col-xs-12 col-sm-9">
-      <p class="pull-right visible-xs">
-        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-      </p>
-    </div>
-    <div class="jumbotron">
+			<div class="col-xs-12 col-sm-9">
+				<p class="pull-right visible-xs">
+					<button type="button" class="btn btn-primary btn-xs"
+						data-toggle="offcanvas">Toggle nav</button>
+				</p>
+			</div>
+			<div class="jumbotron">
 
-      <div id="output-wrap" class="output"><div id="output-area"></div></div>
+				<div id="output-wrap" class="output">
+					<div id="output-area"></div>
+				</div>
 
-      <form id="send-message-area">
-        <textarea id="message" ></textarea>
-      </form>
+				<form id="send-message-area">
+					<textarea id="message"></textarea>
+				</form>
 
-      <div class="row">
-       <div class="col-md-1"><img src="/static/images/8_of_clubs.png" alt="bla"></div>
-       <div class="col-md-1"><img src="/static/images/queen_of_diamonds.png" alt="bla"></div>
-       <div class="col-md-1"><img src="/static/images/6_of_spades.png" alt="bla"></div>
-       <div class="col-md-1"><img src="/static/images/jack_of_hearts.png" alt="bla"></div>
-       <div class="col-md-1"><img src="/static/images/king_of_spades.png" alt="bla"></div>
-       <div class="col-md-1"><img src="/static/images/3_of_clubs.png" alt="bla"></div>
-       <div class="col-md-1"><img src="/static/images/7_of_diamonds.png" alt="bla"></div>
-      </div>
+				<div id="cards" class="row">
+					<div class="col-md-1">
+						<img src="/static/images/8_of_clubs.png" alt="bla">
+					</div>
+					<div class="col-md-1">
+						<img src="/static/images/queen_of_diamonds.png" alt="bla">
+					</div>
+					<div class="col-md-1">
+						<img src="/static/images/6_of_spades.png" alt="bla">
+					</div>
+					<div class="col-md-1">
+						<img src="/static/images/jack_of_hearts.png" alt="bla">
+					</div>
+					<div class="col-md-1">
+						<img src="/static/images/king_of_spades.png" alt="bla">
+					</div>
+					<div class="col-md-1">
+						<img src="/static/images/3_of_clubs.png" alt="bla">
+					</div>
+					<div class="col-md-1">
+						<img src="/static/images/7_of_diamonds.png" alt="bla">
+					</div>
+				</div>
 
-    </div>
-  </div>
-</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

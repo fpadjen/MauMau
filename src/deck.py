@@ -10,10 +10,8 @@ import random
 class Deck:
 
     def __init__(self, name=None):
-        english_card_colors = ['Spades', 'Hearts', 'Clubs', 'Diamonds']
-        english_card_values = ['Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace']
-        german_card_colors = ['Herz', 'Kreuz', 'Karo', 'Pik']
-        german_card_values = ['Zwei', 'Drei', 'Vier', 'Fuenf', 'Sechs', 'Sieben', 'Acht', 'Neun', 'Zehn', 'Bube', 'Dame', 'König', 'Ass']
+        english_card_colors = ['spades', 'hearts', 'clubs', 'diamonds']
+        english_card_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'jack', 'queen', 'king', 'ace']
         self.deck = []
         self.middle_card = ''
         self.deck = self.create_deck(english_card_colors, english_card_values)
@@ -22,7 +20,7 @@ class Deck:
     def create_deck(self, colors, values):
         for i in values:
             for j in colors:
-                self.deck.append(i + " of " + j)
+                self.deck.append('{}_of_{}'.format(i, j))
                 self.randomize_cardstack()
         # debug
         return self.deck
