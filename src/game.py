@@ -23,32 +23,6 @@ class Game(object):
                 # players[count].draw_card(stack.pop())
                 self.playerList[count].draw_card(stack.deal_card())
 
-    def initPlayer(self):
-        more_players = True
-        while more_players:
-            self.output("Enter player name please:")
-            current_name = self.input()
-            self.output("Is this a human or computer player?")
-            self.output("Press h if the player is human, b if it is a bot.")
-            player_type = self.input()
-
-            if (player_type.lower() == "h") or player_type.lower() == "b":
-                # create new object, name it by number starting with 0
-                # add name to list playerList for access
-                player = Player(current_name, player_type, output=self.output)
-                self.playerList.append(player)
-                self.output("debug: new player object created %r" % (player.getCurrentPlayerName()))
-                self.state.incTotalPlayerCount()
-            else:
-                self.output("Please enter h or b to identify player type.")
-                continue
-
-            self.output("Add another player? (y/n)")
-            if self.input() == "y":
-                continue
-            else:
-                more_players = False
-
     def add_web_player(self):
         self.playerList.append(Player('player', 'h', output=self.output))
         self.state.incTotalPlayerCount()
@@ -89,11 +63,9 @@ class Game(object):
             self.output({'action': 'turn', 'middle': self.card_stack.get_current_middle(), 'player': self.playerList[self.state.getCurrentPlayer()].to_dict()})
 
             self.playerList[self.state.getCurrentPlayer()].init_playable_cards(self.card_stack.get_current_middle())
-            self.output("debug: playable cards %r" % (self.playerList[self.state.getCurrentPlayer()].get_playable_cards()))
 
             if self.playerList[self.state.getCurrentPlayer()].getCurrentPlayerType() == "h":
                 # human player
-                self.output("Middle card is %r" % (self.card_stack.get_current_middle()))
                 if self.playerList[self.state.getCurrentPlayer()].get_playable_card_count() == 0:
                     self.card_stack.randomize_cardstack()
                     self.output("You do not have a card you can play. Drawing a card...")
@@ -120,3 +92,28 @@ class Game(object):
                 sys.exit(0)
 
             self.state.nextPlayer()
+
+    def initPlayer(self):
+        more_players = True
+        while more_players:
+            self.output("Enter player name please:")
+            current_name = self.input()
+            self.output("Is this a human or computer player?")
+            self.output("Press h if the player is human, b if it is a bot.")
+            player_type = self.input()
+
+            if (player_type.lower() == "h") or player_type.lower() == "b":
+                # create new object, name it by number starting with 0
+                # add name to list playerList for access
+                player = Player(current_name, player_type, output=self.output)
+                self.playerList.append(player)
+                self.state.incTotalPlayerCount()
+            else:
+                self.output("Please enter h or b to identify player type.")
+                continue
+
+            self.output("Add another player? (y/n)")
+            if self.input() == "y":
+                continue
+            else:
+                more_players = False
