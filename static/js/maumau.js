@@ -41,12 +41,15 @@ $(document).ready(function() {
 				for (var i in data.player.hand) {
 					var card = data.player.hand[i];
 					if (data.player.playable_cards.indexOf(parseInt(i)) > -1) {
-						$('#cards').append('<div class="col-md-1 playable"><img src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+						$('#cards').append('<div class="col-md-1 playable"><img class="playercard" src="/static/images/' + card +'.png" alt="' + i + '"></div>');
 					} else {
-						$('#cards').append('<div class="col-md-1 unplayable"><img src="/static/images/' + card +'.png" alt="' + i + '"></div>');
+						$('#cards').append('<div class="col-md-1 unplayable"><img class="playercard" src="/static/images/' + card +'.png" alt="' + i + '"></div>');
 					}
 				}
 				$('.playable').click(select_card);
+				
+				$('#middle').empty();
+				$('#middle').append('<div class="col-md-1 playable"><img class="playercard" src="/static/images/' + data.middle +'.png" alt="middle"></div>');
 				
 			};
 
