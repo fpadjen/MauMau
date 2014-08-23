@@ -21,54 +21,50 @@ class WebappTestCase(unittest.TestCase):
         rv = self.app.get('/')
         self.assertEqual(200, rv.status_code)
 
-    @patch('webapp.WaitForMessage')
-    @patch('webapp.Player')
-    @patch('webapp.WebsocketConnection')
-    @patch('webapp.time')
-    def test_echo_socket(self, time, ws, player, wait_for_message):
-        time.sleep.side_effect = Exception
+    @patch('webapp.start')
+    def test_echo_socket(self, start):
         ws = Mock()
-
-        self.assertRaises(Exception, webapp.echo_socket, ws)
+        webapp.echo_socket(ws)
+        self.assertTrue(start.called)
 
 
 class WebsocketConnectionTestCase(unittest.TestCase):
 
-    def test_input_adapter(self):
+    def test_input_device(self):
         ws = Mock()
         wc = WebsocketConnection(ws)
         player = Mock()
         player.to_dict.return_value = {}
         player.current_middle = 'middle'
         wc.player = player
-        wc.input_adapter()
+        wc.input_device()
         self.assertEqual(1, ws.send.called)
         self.assertEqual(1, ws.receive.called)
 
-    def test_input_adapter_with_message(self):
+    def test_input_device_with_message(self):
         ws = Mock()
         wc = WebsocketConnection(ws)
         player = Mock()
         player.to_dict.return_value = {}
         player.current_middle = 'middle'
         wc.player = player
-        wc.input_adapter('message')
+        wc.input_device('message')
         self.assertEqual(1, ws.send.called)
         self.assertEqual(1, ws.receive.called)
 
     @patch('webapp.json')
-    def test_output_adapter(self, json):
+    def test_output_device(self, json):
         ws = Mock()
         wc = WebsocketConnection(ws)
-        wc.output_adapter('aa')
+        wc.output_device('aa')
         self.assertEqual(1, ws.send.called)
         self.assertEqual(0, json.dumps.called)
 
     @patch('webapp.json')
-    def test_output_adapter_dict(self, json):
+    def test_output_device_dict(self, json):
         ws = Mock()
         wc = WebsocketConnection(ws)
-        wc.output_adapter({'a': 'b'})
+        wc.output_device({'a': 'b'})
         self.assertEqual(1, ws.send.called)
         self.assertEqual(1, json.dumps.called)
 

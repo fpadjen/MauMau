@@ -17,7 +17,7 @@ class Human(Interface):
 
 
 def main():
-    start(Human)
+    start(Human())
 
 
 if __name__ == '__main__':
