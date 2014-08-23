@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from bot import start, Interface
+from init_player import start, Interface
 
 
 class Human(Interface):

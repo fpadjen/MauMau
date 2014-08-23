@@ -5,7 +5,7 @@ import time
 import json
 from threading import Thread
 import redis
-from bot import WaitForMessage
+from init_player import WaitForMessage
 from random import randint
 from player import Player
 from deck import Deck
