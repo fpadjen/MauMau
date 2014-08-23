@@ -9,7 +9,7 @@ class PlayerTestCase(unittest.TestCase):
     @patch('player.redis')
     @patch('player.os')
     def test_run(self, os, redis):
-        player = Player('player')
+        player = Player('player', output_device=Mock())
         player.play = Mock()
         pubsub = Mock()
         pubsub.listen.return_value = [
@@ -47,7 +47,7 @@ class PlayerTestCase(unittest.TestCase):
     @patch('player.redis')
     @patch('player.os')
     def test_run_quit_self(self, os, redis):
-        player = Player('player')
+        player = Player('player', output_device=Mock())
         player.play = Mock()
         pubsub = Mock()
         pubsub.listen.return_value = [
@@ -67,7 +67,7 @@ class PlayerTestCase(unittest.TestCase):
     @patch('player.redis')
     @patch('player.os')
     def test_run_quit_other(self, os, redis):
-        player = Player('player')
+        player = Player('player', output_device=Mock())
         player.play = Mock()
         pubsub = Mock()
         pubsub.listen.return_value = [
@@ -87,7 +87,7 @@ class PlayerTestCase(unittest.TestCase):
     @patch('player.redis')
     @patch('player.os')
     def test_run_won_self_next(self, os, redis):
-        player = Player('player')
+        player = Player('player', output_device=Mock())
         player.next_player = 'winner'
         player.play = Mock()
         pubsub = Mock()
@@ -114,7 +114,7 @@ class PlayerTestCase(unittest.TestCase):
     @patch('player.redis')
     @patch('player.os')
     def test_run_won_join_self_next(self, os, redis):
-        player = Player('player')
+        player = Player('player', output_device=Mock())
         player.next_player = 'winner'
         player.play = Mock()
         pubsub = Mock()
@@ -137,7 +137,6 @@ class PlayerTestCase(unittest.TestCase):
         player = Player('player')
         data = player.to_dict()
         self.assertEqual('player', data['name'])
-        self.assertEqual([], data['hand'])
         self.assertEqual([], data['playable_cards'])
 
     def test_draw_card(self):
@@ -169,7 +168,7 @@ class PlayerTestCase(unittest.TestCase):
 
     def test_choose_card_human(self):
         input_device = Mock()
-        player = Player('player', 'h', input_device=input_device)
+        player = Player('player', input_device=input_device)
         player.hand = ['card', 'three_of_spades']
         input_device.return_value = 0
         self.assertEqual('card', player.choose_card())

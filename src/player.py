@@ -8,13 +8,11 @@ from deck import Deck
 class Player(Thread):
     def __init__(self,
                  name=None,
-                 playerType=None,
                  output_device=None,
                  input_device=None):
         super(Player, self).__init__()
         self.name = name
-        self.hand = []
-        self.playerType = playerType
+        self.hand = [Deck.get_random_card() for _ in range(7)]
         self.playable_cards = []
         self.output_device = output_device
         self.input_device = input_device
@@ -34,6 +32,7 @@ class Player(Thread):
             if message['type'] == 'subscribe':
                 continue
             data = json.loads(message['data'])
+            self.output_device(data)
             print('player: {} next: {} data: {}'
                   .format(self.name, self.next_player, data))
             if data['action'] == 'quit':

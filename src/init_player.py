@@ -51,7 +51,6 @@ def start(interface):
 
     player = Player(
         'human{}'.format(randint(0, 1000)),
-        'h',
         output_device=interface.output_device,
         input_device=interface.input_device)
     interface.player = player
