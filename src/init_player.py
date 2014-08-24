@@ -64,7 +64,14 @@ def start(interface):
 
     wait_for_message.active = False
 
-    if wait_for_message.waiting:
+    next_step(player,
+              client,
+              wait_for_message.waiting,
+              wait_for_message.known_player)
+
+
+def next_step(player, client, waiting, known_player):
+    if waiting:
         player.next_player = player.name
         player.start()
         sleep(1)
@@ -75,15 +82,19 @@ def start(interface):
                 'middle': Deck.get_random_card(),
                 'next': player.name}))
     else:
-        player.next_player = wait_for_message.known_player
+        player.next_player = known_player
         client.publish(
             'table',
             json.dumps({
                 'action': 'join',
                 'player': player.name,
-                'before': wait_for_message.known_player}))
+                'before': known_player}))
         player.start()
 
+    loop(player, client)
+
+
+def loop(player, client):
     try:
         while True:
             if player.won:

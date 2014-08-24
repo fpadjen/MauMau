@@ -68,9 +68,9 @@ class Player(Thread):
     def check_card(self, card_to_play):
         current_card = card_to_play.split('_of_')
         current_middle = self.current_middle.split('_of_')
-        if current_middle == 'jack':
+        if 'jack' in current_middle:
             return True
-        if current_card == 'jack':
+        if 'jack' in current_card:
             return True
         if current_card[0] == current_middle[0]:
             return True
@@ -149,7 +149,8 @@ class Player(Thread):
                 self.playable_cards.append(card)
 
     def choose_card(self):
-        return self.hand.pop(int(self.input_device()))
+        card = self.hand.pop(int(self.input_device()))
+        return card
 
     def check_mau(self):
         if len(self.hand) == 1:
@@ -158,5 +159,4 @@ class Player(Thread):
         elif len(self.hand) == 0:
             # maumau
             return 0
-        else:
-            return 1
+        return 1
