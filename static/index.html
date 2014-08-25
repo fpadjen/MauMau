@@ -20,35 +20,37 @@
 </head>
 
 <body>
-	<div class="container-fluid">
-		<div class="row row-offcanvas row-offcanvas-right">
-			<div class="row">
-				<div id="middle" class="col-md-1">
-					<img class="playercard" src="/static/images/8_of_clubs.png"
-						alt="bla">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8">
+
+				<div class="row row-offcanvas row-offcanvas-right">
+					<div id="middle" class="col-md-1">
+						<img class="playercard" src="/static/images/8_of_clubs.png"
+							alt="middle">
+					</div>
+				</div>
+				<div class="row row-offcanvas row-offcanvas-right">
+					<div id="cards" class="row">
+						<div class="col-md-1">
+							<img class="playercard" src="/static/images/8_of_clubs.png"
+								alt="bla">
+						</div>
+						<div class="col-md-1">
+							<img class="playercard"
+								src="/static/images/queen_of_diamonds.png" alt="bla">
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row row-offcanvas row-offcanvas-right">
-			<div class="row row-offcanvas row-offcanvas-right">
-				<div id="cards" class="row">
-					<div class="col-md-1">
-						<img class="playercard" src="/static/images/8_of_clubs.png"
-							alt="bla">
-					</div>
-					<div class="col-md-1">
-						<img class="playercard" src="/static/images/queen_of_diamonds.png"
-							alt="bla">
-					</div>
-				</div>
+			<div class="col-sm-3 col-sm-offset-1">
+				<div id="players"></div>
 			</div>
 		</div>
 		<div class="jumbotron">
-
 			<div id="output-wrap" class="output">
 				<div id="output-area"></div>
 			</div>
-
 			<form id="send-message-area">
 				<textarea id="message"></textarea>
 			</form>

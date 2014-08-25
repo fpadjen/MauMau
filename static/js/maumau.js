@@ -30,10 +30,10 @@ $(document).ready(function() {
 	
 	websocket.onmessage =
 			function(ev) {
-				add_message(ev.data);
 				var data = JSON.parse(ev.data);
 				
 				if (data.we) {
+					add_message(ev.data);
 					$('#cards').empty();
 					for (var i in data.player.hand) {
 						var card = data.player.hand[i];
@@ -44,6 +44,22 @@ $(document).ready(function() {
 						}
 					}
 					$('.playable').click(select_card);
+				} else {
+					if (data.action == 'play') {
+						$('#' + data.player).remove();
+						var element = '<div id="' + data.player + '">';
+						element += '<div>' + data.player + '</div>';
+						element += '<div class="row cards"></div>';
+						element += '<div>' + data.action + '</div>';
+						element += '<img class="othercard" src="/static/images/' + data.middle + '.png" alt="middle">';
+						$('#players').append(element);
+						var cards = $('#' + data.player).find(".cards");
+						for (var j=0; j < data.number_of_cards; j++) {
+							cards.append('<img class="othercard" src="/static/images/back.png" alt="' + j + '">');
+						}
+					} else {
+						add_message(ev.data);
+					}
 				}
 				
 				$('#middle').empty();

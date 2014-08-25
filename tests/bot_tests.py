@@ -20,6 +20,7 @@ class BotTestCase(unittest.TestCase):
     def test_input_device(self, _input):
         b = bot.Bot()
         b.player = Mock()
+        b.player.playable_cards = [0]
         self.assertEqual(0, b.input_device())
 
 

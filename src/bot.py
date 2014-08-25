@@ -13,8 +13,8 @@ class Bot(Interface):
         print(message)
 
     def input_device(self):
-        sleep(1)
-        return 0
+        sleep(2)
+        return self.player.playable_cards[0]
 
 
 def main():

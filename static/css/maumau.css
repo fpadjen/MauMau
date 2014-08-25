@@ -8,6 +8,11 @@
 	height: 200px;
 }
 
+.othercard {
+	height: 30px;
+	margin: 1px;
+}
+
 .unplayable {
 	opacity: 0.4;
 }
